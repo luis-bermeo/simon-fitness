@@ -1,6 +1,6 @@
 /* ============================================
-   SIMON FITNESS — Interactive JavaScript
-   Vanilla JS / No Frameworks
+   SIMON FITNESS — Cinematic Interactive Engine
+   Vanilla JS / Apple-Grade Animations / 60fps
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -70,15 +70,89 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // 3. SCROLL REVEAL — Intersection Observer
+  // 3. CINEMATIC SCROLL REVEAL — Advanced
+  //    Intersection Observer with staggering
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  const revealElements = document.querySelectorAll('.reveal');
 
+  // Auto-inject reveal-element class to key elements
+  function injectRevealClasses() {
+    // Section headers
+    document.querySelectorAll('.section-header').forEach(el => {
+      el.classList.add('reveal-element');
+    });
+
+    // Service cards with stagger
+    document.querySelectorAll('.service-card').forEach((el, i) => {
+      el.classList.add('reveal-element');
+      el.setAttribute('data-delay', String(i + 1));
+    });
+
+    // Advantage cards with stagger
+    document.querySelectorAll('.advantage-card').forEach((el, i) => {
+      el.classList.add('reveal-element');
+      el.setAttribute('data-delay', String((i % 3) + 1));
+    });
+
+    // Testimonial cards with stagger
+    document.querySelectorAll('.testimonial-card').forEach((el, i) => {
+      el.classList.add('reveal-element');
+      el.setAttribute('data-delay', String(i + 1));
+    });
+
+    // Hero elements
+    const heroBadge = document.querySelector('.hero__badge');
+    const heroSubtitle = document.querySelector('.hero__subtitle');
+    const heroActions = document.querySelector('.hero__actions');
+    const heroStats = document.querySelector('.hero__stats');
+    const heroVisual = document.querySelector('.hero__visual');
+
+    if (heroBadge) { heroBadge.classList.add('reveal-element'); }
+    if (heroSubtitle) { heroSubtitle.classList.add('reveal-element'); heroSubtitle.setAttribute('data-delay', '2'); }
+    if (heroActions) { heroActions.classList.add('reveal-element'); heroActions.setAttribute('data-delay', '3'); }
+    if (heroStats) { heroStats.classList.add('reveal-element'); heroStats.setAttribute('data-delay', '4'); }
+    if (heroVisual) { heroVisual.classList.add('reveal-element'); heroVisual.setAttribute('data-delay', '2'); }
+
+    // Brands section
+    const brandsLabel = document.querySelector('.brands__label');
+    const brandsGrid = document.querySelector('.brands__grid');
+    if (brandsLabel) { brandsLabel.classList.add('reveal-element'); }
+    if (brandsGrid) { brandsGrid.classList.add('reveal-element'); brandsGrid.setAttribute('data-delay', '1'); }
+
+    // CTA section
+    const ctaContent = document.querySelector('.cta-section__content');
+    const ctaForm = document.querySelector('.contact-form');
+    if (ctaContent) { ctaContent.classList.add('reveal-element'); }
+    if (ctaForm) { ctaForm.classList.add('reveal-element'); ctaForm.setAttribute('data-delay', '2'); }
+  }
+
+  injectRevealClasses();
+
+  // Check for reduced motion preference
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Create the cinematic observer
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('revealed');
+        // Small delay for orchestrated feel
+        requestAnimationFrame(() => {
+          entry.target.classList.add('is-visible');
+        });
         revealObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.08,
+    rootMargin: '0px 0px -60px 0px'
+  });
+
+  // Also keep legacy reveal observer for compatibility
+  const legacyRevealElements = document.querySelectorAll('.reveal:not(.reveal-element)');
+  const legacyObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        legacyObserver.unobserve(entry.target);
       }
     });
   }, {
@@ -86,10 +160,94 @@ document.addEventListener('DOMContentLoaded', () => {
     rootMargin: '0px 0px -40px 0px'
   });
 
-  revealElements.forEach(el => revealObserver.observe(el));
+  if (!prefersReducedMotion) {
+    document.querySelectorAll('.reveal-element').forEach(el => revealObserver.observe(el));
+    legacyRevealElements.forEach(el => legacyObserver.observe(el));
+  } else {
+    // Instantly show all elements if reduced motion preferred
+    document.querySelectorAll('.reveal-element').forEach(el => el.classList.add('is-visible'));
+    legacyRevealElements.forEach(el => el.classList.add('revealed'));
+  }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // 4. SMOOTH SCROLL — Anchor navigation
+  // 4. HERO TITLE — Word-by-Word Cinematic
+  //    Entry Animation (Apple-style)
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  function initHeroWordAnimation() {
+    const heroTitle = document.querySelector('.hero__title');
+    if (!heroTitle || prefersReducedMotion) return;
+
+    // Save the original HTML to preserve the <span> accent
+    const originalHTML = heroTitle.innerHTML;
+
+    // Parse into words while preserving the <span> tags
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = originalHTML.trim();
+
+    const fragment = document.createDocumentFragment();
+    let wordIndex = 0;
+
+    function processNode(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const words = node.textContent.split(/(\s+)/);
+        words.forEach(word => {
+          if (word.trim() === '') {
+            // Whitespace — just add a text node
+            fragment.appendChild(document.createTextNode(word));
+          } else {
+            const span = document.createElement('span');
+            span.className = 'word';
+            span.textContent = word;
+            span.style.transitionDelay = `${wordIndex * 80 + 200}ms`;
+            fragment.appendChild(span);
+            wordIndex++;
+          }
+        });
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        // Clone the element (e.g. <span class="hero__title-accent">)
+        const clone = node.cloneNode(false);
+        // Process its children
+        const innerFragment = document.createDocumentFragment();
+        node.childNodes.forEach(child => {
+          if (child.nodeType === Node.TEXT_NODE) {
+            const words = child.textContent.split(/(\s+)/);
+            words.forEach(word => {
+              if (word.trim() === '') {
+                innerFragment.appendChild(document.createTextNode(word));
+              } else {
+                const span = document.createElement('span');
+                span.className = 'word';
+                span.textContent = word;
+                span.style.transitionDelay = `${wordIndex * 80 + 200}ms`;
+                innerFragment.appendChild(span);
+                wordIndex++;
+              }
+            });
+          }
+        });
+        clone.appendChild(innerFragment);
+        fragment.appendChild(clone);
+      }
+    }
+
+    tempDiv.childNodes.forEach(processNode);
+
+    // Replace hero title content
+    heroTitle.innerHTML = '';
+    heroTitle.appendChild(fragment);
+
+    // Trigger the animation after a short delay for the page to settle
+    setTimeout(() => {
+      heroTitle.querySelectorAll('.word').forEach(word => {
+        word.classList.add('is-visible');
+      });
+    }, 300);
+  }
+
+  initHeroWordAnimation();
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // 5. SMOOTH SCROLL — Anchor navigation
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -111,52 +269,43 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // 5. WHATSAPP FAB — Animated bubble
+  // 6. WHATSAPP FAB — Cinematic Entrance
+  //    + Periodic Attention Ping (no bubble)
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  const whatsappBubble = document.getElementById('whatsapp-bubble');
+  const whatsappFab = document.getElementById('whatsapp-fab');
+  const whatsappBtn = document.getElementById('whatsapp-btn');
 
-  // Show bubble after 4 seconds
+  // Cinematic entrance after 2 seconds
   setTimeout(() => {
-    if (whatsappBubble) {
-      whatsappBubble.style.display = 'block';
+    if (whatsappFab) {
+      whatsappFab.classList.add('is-entered');
     }
-  }, 4000);
+  }, 2000);
 
-  // Periodically show the bubble on mobile
-  let bubbleInterval;
-  function startBubbleCycle() {
-    if (window.innerWidth <= 768) {
-      bubbleInterval = setInterval(() => {
-        if (whatsappBubble) {
-          whatsappBubble.style.display = 'block';
-          whatsappBubble.style.animation = 'none';
-          void whatsappBubble.offsetHeight; // Trigger reflow
-          whatsappBubble.style.animation = 'bubble-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
-
-          setTimeout(() => {
-            whatsappBubble.style.display = 'none';
-          }, 6000);
-        }
-      }, 15000);
-    }
+  // Periodic attention ping every 5 seconds
+  let pingInterval;
+  function startPingCycle() {
+    pingInterval = setInterval(() => {
+      if (whatsappBtn && whatsappFab && whatsappFab.classList.contains('is-entered')) {
+        whatsappBtn.classList.add('ping');
+        setTimeout(() => {
+          whatsappBtn.classList.remove('ping');
+        }, 700);
+      }
+    }, 5000);
   }
 
-  startBubbleCycle();
-
-  window.addEventListener('resize', () => {
-    clearInterval(bubbleInterval);
-    startBubbleCycle();
-  });
+  // Start pinging after the FAB has entered
+  setTimeout(startPingCycle, 3000);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // 6. CONTACT FORM — Focus animations &
-  //    EmailJS-ready setup
+  // 7. CONTACT FORM — Premium Focus Animations
+  //    with elevated labels & red glow flash
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const contactForm = document.getElementById('contact-form');
   const formInputs = contactForm ? contactForm.querySelectorAll('input, select, textarea') : [];
 
   formInputs.forEach(input => {
-    // Add floating label effect
     input.addEventListener('focus', () => {
       input.closest('.contact-form__group').classList.add('focused');
     });
@@ -167,13 +316,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Check for pre-filled values
     if (input.value) {
       input.closest('.contact-form__group').classList.add('focused');
     }
   });
 
-  // Form submission handler (EmailJS-ready)
+  // Form submission handler (EmailJS-ready → gestion@simonfitness.com)
   if (contactForm) {
     contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -181,22 +329,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const submitBtn = contactForm.querySelector('.contact-form__submit');
       const originalText = submitBtn.textContent;
 
-      // Visual feedback
       submitBtn.textContent = 'Enviando...';
       submitBtn.disabled = true;
       submitBtn.style.opacity = '0.7';
 
-      // EmailJS integration point
-      // Uncomment and configure when EmailJS is set up:
+      // EmailJS integration — configure with your IDs:
+      // Target email: gestion@simonfitness.com
       // emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', contactForm)
-      //   .then(() => { ... })
-      //   .catch(() => { ... });
+      //   .then(() => { /* success */ })
+      //   .catch(() => { /* error */ });
 
       // Simulated success (replace with EmailJS)
       setTimeout(() => {
         submitBtn.textContent = '✓ Mensaje Enviado';
         submitBtn.style.background = '#12B76A';
-        submitBtn.style.boxShadow = '0 4px 14px rgba(18, 183, 106, 0.3)';
+        submitBtn.style.boxShadow = '0 0 20px rgba(18, 183, 106, 0.3), 0 0 60px rgba(18, 183, 106, 0.15)';
 
         setTimeout(() => {
           submitBtn.textContent = originalText;
@@ -214,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // 7. DYNAMIC YEAR — Footer copyright
+  // 8. DYNAMIC YEAR — Footer copyright
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const yearSpan = document.getElementById('current-year');
   if (yearSpan) {
@@ -222,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // 8. COUNTER ANIMATION — Stats numbers
+  // 9. COUNTER ANIMATION — Stats numbers
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const statNumbers = document.querySelectorAll('.hero__stat-number[data-count]');
 
@@ -261,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
   statNumbers.forEach(el => statsObserver.observe(el));
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // 9. ACTIVE NAV LINK — Highlight on scroll
+  // 10. ACTIVE NAV LINK — Highlight on scroll
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.navbar__link[href^="#"]');

@@ -1,6 +1,6 @@
 /* ============================================
    SIMON FITNESS — Design System Variables
-   Premium Light Theme / Apple & Stripe Style
+   Premium Cinematic Theme / Apple & SaaS Style
    ============================================ */
 
 :root {
@@ -22,6 +22,8 @@
   --color-accent-hover:   #C40511;
   --color-accent-light:   rgba(227, 6, 19, 0.08);
   --color-accent-glow:    rgba(227, 6, 19, 0.35);
+  --color-accent-glow-lg: rgba(227, 6, 19, 0.5);
+  --color-accent-glow-subtle: rgba(227, 6, 19, 0.18);
 
   /* ── Semantic Colors ── */
   --color-success:        #12B76A;
@@ -85,25 +87,43 @@
   --shadow-xl:    0 20px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
   --shadow-2xl:   0 25px 50px -12px rgba(0,0,0,0.15);
   --shadow-accent:0 4px 14px rgba(227, 6, 19, 0.25);
+  --shadow-accent-glow: 0 0 20px rgba(227, 6, 19, 0.3), 0 0 60px rgba(227, 6, 19, 0.15);
+  --shadow-accent-glow-hover: 0 0 30px rgba(227, 6, 19, 0.45), 0 0 80px rgba(227, 6, 19, 0.2), 0 8px 32px rgba(227, 6, 19, 0.3);
   --shadow-card:  0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
   --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.06), 0 16px 40px rgba(0,0,0,0.1);
+  --shadow-card-premium: 0 8px 30px rgba(0,0,0,0.08), 0 0 1px rgba(0,0,0,0.1);
 
   /* ── Glassmorphism ── */
   --glass-bg:        rgba(255, 255, 255, 0.7);
   --glass-bg-strong: rgba(255, 255, 255, 0.85);
+  --glass-bg-hover:  rgba(255, 255, 255, 0.85);
   --glass-blur:      blur(12px);
   --glass-blur-lg:   blur(20px);
+  --glass-blur-xl:   blur(30px);
   --glass-border:    1px solid rgba(255, 255, 255, 0.5);
   --glass-border-subtle: 1px solid rgba(0, 0, 0, 0.06);
+  --glass-border-glow:   1px solid rgba(227, 6, 19, 0.15);
 
-  /* ── Transitions ── */
+  /* ── Transitions — Apple-Grade Easings ── */
   --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out:   cubic-bezier(0.65, 0, 0.35, 1);
   --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-apple:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-decel:    cubic-bezier(0.0, 0.0, 0.2, 1);
   --duration-fast:   150ms;
   --duration-base:   250ms;
   --duration-slow:   400ms;
   --duration-slower: 600ms;
+  --duration-cinematic: 1200ms;
+  --duration-hero:   1800ms;
+
+  /* ── Reveal Animation Tokens ── */
+  --reveal-distance:  50px;
+  --reveal-scale:     0.95;
+  --reveal-blur:      10px;
+  --reveal-duration:  1.2s;
+  --reveal-easing:    cubic-bezier(0.16, 1, 0.3, 1);
 
   /* ── Layout ── */
   --container-max:  1200px;

@@ -134,12 +134,11 @@
   <!-- Lienzo WebGL 3D Fijo de Fondo (Three.js) -->
   <canvas id="webgl-canvas"></canvas>
 
-  <!-- Navbar / Header de Estilo Apple -->
+  <!-- Navbar / Header de Estilo Apple Limpio -->
   <header class="site-header">
     <div class="header-container">
       <a href="#" class="brand-isotype" aria-label="Simón Fitness Inicio">
         <span class="s-red">S</span><span class="f-white">F</span>
-        <span class="brand-tag">v1.0</span>
       </a>
 
       <nav>
@@ -167,54 +166,56 @@
   <!-- Contenedor Principal de Scrollytelling -->
   <main class="scrollytelling-container">
 
-    <!-- SECCIÓN 1: HERO IMPACTANTE MINIMALISTA -->
+    <!-- SECCIÓN 1: HERO (ESTRUCTURA DE 2 COLUMNAS EN ESCRITORIO) -->
     <section class="hero-section" id="inicio">
-      <div class="hero-title-wrapper">
-        <h1 class="hero-title">
-          SIMON <span class="accent-red">FITNESS</span>
-        </h1>
-      </div>
+      <div class="hero-content-grid">
+        <div class="hero-text-col">
+          <h1 class="hero-title">
+            SIMON <span class="accent-red">FITNESS</span>
+          </h1>
 
-      <p class="hero-subtitle-seo">
-        Servicio Técnico Oficial en Murcia y Alicante. Especializados en la reparación de cintas de correr, elípticas, bicicletas estáticas y mantenimiento preventivo de gimnasios. Más de 15 años de experiencia técnica comprobada.
-      </p>
+          <p class="hero-subtitle-seo">
+            Servicio Técnico Oficial en Murcia y Alicante. Especializados en la reparación de cintas de correr, elípticas, bicicletas estáticas y mantenimiento preventivo de gimnasios. Más de 15 años de experiencia comprobada.
+          </p>
 
-      <div class="hero-cta-group">
-        <a href="#contacto" class="btn-cta-apple">
-          <i class="fa-solid fa-screwdriver-wrench"></i>
-          <span>Solicitar Asistencia Técnica</span>
-        </a>
-        <a href="https://wa.me/34650553360" target="_blank" rel="noopener" class="btn-cta-apple btn-cta-secondary">
-          <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i>
-          <span>WhatsApp 650 55 33 60</span>
-        </a>
-      </div>
+          <div class="hero-cta-group">
+            <a href="#contacto" class="btn-cta-apple">
+              <i class="fa-solid fa-screwdriver-wrench"></i>
+              <span>Solicitar Asistencia Técnica</span>
+            </a>
+            <a href="https://wa.me/34650553360" target="_blank" rel="noopener" class="btn-cta-apple btn-cta-secondary">
+              <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i>
+              <span>WhatsApp 650 55 33 60</span>
+            </a>
+          </div>
 
-      <!-- Tarjetas de Métricas Animadas -->
-      <div class="hero-metrics-grid">
-        <div class="metric-card">
-          <div class="metric-number" data-target="15" data-suffix="+">0</div>
-          <div class="metric-label">Años de Experiencia</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-number" data-target="3500" data-suffix="+">0</div>
-          <div class="metric-label">Máquinas Reparadas</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-number" data-target="98" data-suffix="%">0</div>
-          <div class="metric-label">Clientes Satisfechos</div>
-        </div>
-      </div>
+          <!-- Tarjetas de Métricas Animadas -->
+          <div class="hero-metrics-grid">
+            <div class="metric-card">
+              <div class="metric-number" data-target="15" data-suffix="+">0</div>
+              <div class="metric-label">Años Experiencia</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-number" data-target="3500" data-suffix="+">0</div>
+              <div class="metric-label">Reparaciones</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-number" data-target="98" data-suffix="%">0</div>
+              <div class="metric-label">Satisfacción</div>
+            </div>
+          </div>
 
-      <!-- Destacados Rápidos de Garantía -->
-      <div class="hero-quick-highlights">
-        <div class="highlight-badge">
-          <i class="fa-solid fa-bolt" style="color: #fbbf24;"></i>
-          <span>Respuesta en menos de 24 horas</span>
-        </div>
-        <div class="highlight-badge">
-          <i class="fa-solid fa-shield-halved" style="color: var(--color-primary-red);"></i>
-          <span>Garantía incluida en todas las reparaciones</span>
+          <!-- Destacados Rápidos de Garantía -->
+          <div class="hero-quick-highlights">
+            <div class="highlight-badge">
+              <i class="fa-solid fa-bolt" style="color: #fbbf24;"></i>
+              <span>Respuesta en menos de 24 horas</span>
+            </div>
+            <div class="highlight-badge">
+              <i class="fa-solid fa-shield-halved" style="color: var(--color-primary-red);"></i>
+              <span>Garantía incluida por escrito</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -363,8 +364,8 @@
       </div>
     </section>
 
-    <!-- SECCIÓN 5: RESEÑAS Y OPINIONES -->
-    <section class="content-section" id="opiniones">
+    <!-- SECCIÓN 5: RESEÑAS Y OPINIONES (Fondo Sólido) -->
+    <section class="content-section reviews-section" id="opiniones">
       <div class="section-container">
         <div class="section-header">
           <div class="section-tagline">Testimonios Reales</div>
@@ -424,8 +425,8 @@
       </div>
     </section>
 
-    <!-- SECCIÓN 6: FORMULARIO DE CONTACTO Y FOOTER -->
-    <section class="content-section" id="contacto">
+    <!-- SECCIÓN 6: FORMULARIO DE CONTACTO Y FOOTER (Fondo Sólido) -->
+    <section class="content-section contact-section" id="contacto">
       <div class="section-container">
         <div class="section-header">
           <div class="section-tagline">Asistencia Inmediata</div>
@@ -536,7 +537,7 @@
     <span class="whatsapp-pulse-dot"></span>
   </a>
 
-  <!-- Footer con Isotipo SF -->
+  <!-- Footer con Isotipo SF Limpio -->
   <footer class="site-footer">
     <div class="footer-container">
       <div class="footer-top">

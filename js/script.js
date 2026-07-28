@@ -1,6 +1,6 @@
 /**
- * SIMÓN FITNESS - MAIN APPLICATION LOGIC & GSAP SCROLLTRIGGER ENGINE
- * Coordinación de Scrollytelling, animación de métricas y validación interactiva.
+ * SIMÓN FITNESS - MAIN APPLICATION LOGIC & GSAP SCROLLTRIGGER ENGINE (v2.1)
+ * Coordinación de Scrollytelling 3D, animación de métricas y validación interactiva.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,17 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
     window.SimonFitness3D.init();
   }
 
-  // 2. Registrar GSAP y ScrollTrigger si están disponibles
+  // 2. Registrar GSAP y ScrollTrigger
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
     setupScrollytelling();
     setupMetricsCountUp();
   } else {
-    console.warn('GSAP o ScrollTrigger no cargados. Utilizando fallback CSS.');
     setupFallbackScroll();
   }
 
-  // 3. Inicializar funcionalidades interactivas (Formulario, Header, WhatsApp)
+  // 3. Header & Formulario
   setupHeaderScroll();
   setupContactForm();
 });
@@ -31,80 +30,47 @@ document.addEventListener('DOMContentLoaded', () => {
    ========================================================================== */
 
 function setupScrollytelling() {
-  // Sincronización del canvas 3D con el Scroll total del documento
+  // Enlace del scroll global con la escena 3D en Three.js
   ScrollTrigger.create({
     trigger: document.body,
     start: 'top top',
     end: 'bottom bottom',
     onUpdate: (self) => {
-      const progress = self.progress;
-      // Calcular la sección activa (0 a 4)
-      const sectionIndex = Math.floor(progress * 5);
       if (window.SimonFitness3D) {
-        window.SimonFitness3D.setScrollProgress(progress, sectionIndex);
+        window.SimonFitness3D.setScrollProgress(self.progress);
       }
     }
   });
 
-  // ANIMACIÓN HERO SCROLL (Escalado de Título e Revelado de Subtítulo SEO)
-  const heroTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '.hero-section',
-      start: 'top top',
-      end: 'bottom top',
-      scrub: 0.5,
-      pin: false
-    }
-  });
-
-  heroTl
-    .to('.hero-title-wrapper', {
-      scale: 0.82,
-      opacity: 0.9,
-      ease: 'power1.out'
-    }, 0)
-    .to('.hero-subtitle-seo', {
-      opacity: 1,
-      y: 0,
-      duration: 0.4,
-      ease: 'power2.out'
-    }, 0.1)
-    .to('.hero-cta-group', {
-      opacity: 1,
-      y: 0,
-      duration: 0.4,
-      ease: 'power2.out'
-    }, 0.2);
-
-  // ANIMACIÓN DE REVELADO DE TARJETAS DE SERVICIO POR SCROLL
+  // Animaciones de revelado de tarjetas de servicio
   gsap.utils.toArray('.service-card-apple').forEach((card, index) => {
-    gsap.from(card, {
-      scrollTrigger: {
-        trigger: card,
-        start: 'top 85%',
-        toggleActions: 'play none none reverse'
-      },
-      y: 50,
-      opacity: 0,
-      duration: 0.8,
-      delay: index * 0.15,
-      ease: 'power3.out'
-    });
-  });
-
-  // ANIMACIÓN DE REVELADO SECCIÓN "POR QUÉ ELEGIRNOS"
-  gsap.utils.toArray('.why-us-card').forEach((card, index) => {
     gsap.from(card, {
       scrollTrigger: {
         trigger: card,
         start: 'top 88%',
         toggleActions: 'play none none reverse'
       },
-      scale: 0.92,
+      y: 40,
       opacity: 0,
-      duration: 0.6,
-      delay: (index % 3) * 0.1,
-      ease: 'back.out(1.4)'
+      duration: 0.7,
+      delay: index * 0.12,
+      ease: 'power3.out'
+    });
+  });
+
+  // Animaciones de la sección "¿Por Qué Elegirnos?"
+  gsap.utils.toArray('.why-us-card').forEach((card, index) => {
+    gsap.from(card, {
+      scrollTrigger: {
+        trigger: card,
+        start: 'top 90%',
+        toggleActions: 'play none none reverse'
+      },
+      scale: 0.95,
+      opacity: 0,
+      duration: 0.5,
+      delay: (index % 3) * 0.08,
+      ease: 'back.out(1.3)'
     });
   });
 }
@@ -118,7 +84,6 @@ function setupMetricsCountUp() {
   
   metricElements.forEach(el => {
     const target = parseInt(el.getAttribute('data-target'), 10);
-    const prefix = el.getAttribute('data-prefix') || '';
     const suffix = el.getAttribute('data-suffix') || '';
 
     ScrollTrigger.create({
@@ -129,10 +94,10 @@ function setupMetricsCountUp() {
         let countObj = { val: 0 };
         gsap.to(countObj, {
           val: target,
-          duration: 2.2,
+          duration: 2.0,
           ease: 'power2.out',
           onUpdate: () => {
-            el.textContent = `${prefix}${Math.floor(countObj.val)}${suffix}`;
+            el.textContent = `${Math.floor(countObj.val)}${suffix}`;
           }
         });
       }
@@ -140,12 +105,9 @@ function setupMetricsCountUp() {
   });
 }
 
-/* Fallback si GSAP no se carga */
 function setupFallbackScroll() {
   const heroSub = document.querySelector('.hero-subtitle-seo');
-  const heroCta = document.querySelector('.hero-cta-group');
   if (heroSub) heroSub.style.opacity = '1';
-  if (heroCta) heroCta.style.opacity = '1';
 }
 
 /* ==========================================================================
@@ -177,7 +139,6 @@ function setupContactForm() {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    // Validación básica de campos requeridos
     const nameInput = form.querySelector('[name="nombre"]');
     const phoneInput = form.querySelector('[name="telefono"]');
     const emailInput = form.querySelector('[name="email"]');
@@ -196,10 +157,7 @@ function setupContactForm() {
 
     if (!isValid) return;
 
-    // Simulación de envío exitoso futurista
     const submitBtn = form.querySelector('.form-submit-btn');
-    const originalText = submitBtn.innerHTML;
-
     submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
     submitBtn.disabled = true;
 
@@ -208,6 +166,6 @@ function setupContactForm() {
       if (successMsg) {
         successMsg.style.display = 'block';
       }
-    }, 1200);
+    }, 1000);
   });
 }

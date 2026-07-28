@@ -1,33 +1,30 @@
 /**
- * SIMÓN FITNESS - THREE.JS 3D SCENE & ENGINE
- * Experiencia 3D Scrollytelling interactiva a 60 FPS para móviles y desktop.
+ * SIMÓN FITNESS - THREE.JS 3D SCENE & ENGINE (v2.1 Refined)
+ * Escena 3D ultra realista con Mancuerna Metálica 3D, Cintas, Elípticas y Despiece Mecánico.
+ * Desplazamiento y desvanecimiento inteligente para cero solapamientos de texto.
  */
 
 window.SimonFitness3D = (function () {
   'use strict';
 
-  let scene, camera, renderer, container;
+  let scene, camera, renderer;
   let canvas;
-  let isLowPerformance = false;
 
-  // Grupos 3D para cada modelo/sección
+  // Grupos 3D
   const modelsGroup = new THREE.Group();
-  let heroRingGroup = new THREE.Group();
+  let dumbbellGroup = new THREE.Group();
   let treadmillGroup = new THREE.Group();
   let ellipticalGroup = new THREE.Group();
   let motorExplodedGroup = new THREE.Group();
   let particlesGroup = new THREE.Group();
 
-  // Piezas despiezadas para animar en la sección de mantenimiento
   const explodedParts = [];
 
   // Estado del Scroll interpolado (Lerp)
   let targetProgress = 0;
   let currentProgress = 0;
-  let targetSection = 0;
-  let currentSection = 0;
 
-  // Coordenadas del ratón/touch para interacción sutil
+  // Interacción del ratón
   let mouseX = 0;
   let mouseY = 0;
   let targetMouseX = 0;
@@ -40,41 +37,41 @@ window.SimonFitness3D = (function () {
       return;
     }
 
-    // Configuración de la Escena
+    // Escena y Niebla Oscura Premium
     scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x060608, 0.035);
+    scene.fog = new THREE.FogExp2(0x060608, 0.04);
 
-    // Cámara
+    // Cámara Perspectiva
     camera = new THREE.PerspectiveCamera(
       45,
       window.innerWidth / window.innerHeight,
       0.1,
       100
     );
-    camera.position.set(0, 0, 12);
+    camera.position.set(0, 0, 10);
 
-    // Renderizador WebGL
+    // Renderizador WebGL de Alto Rendimiento
     renderer = new THREE.WebGLRenderer({
       canvas: canvas,
       alpha: true,
       antialias: window.devicePixelRatio <= 1.5,
-      powerPreference: 'high-performance',
+      powerPreference: 'high-performance'
     });
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.25;
 
-    // Iluminación Cinemática
-    setupLighting();
+    // Iluminación de Estudio Industrial
+    setupStudioLighting();
 
-    // Construcción de Objetos 3D
+    // Creación de Modelos 3D Realistas
     createParticles();
-    createHeroRing();
-    createTreadmillModel();
-    createEllipticalModel();
-    createMotorExplodedModel();
+    createDumbbellModel();      // Reemplazo: Mancuerna Metálica Realista
+    createTreadmillModel();     // Cinta de Correr
+    createEllipticalModel();    // Elíptica
+    createMotorExplodedModel(); // Despiece Mecánico
 
     scene.add(modelsGroup);
 
@@ -83,62 +80,48 @@ window.SimonFitness3D = (function () {
     window.addEventListener('mousemove', onMouseMove, false);
     window.addEventListener('touchmove', onTouchMove, { passive: true });
 
-    // Loop de renderizado
+    // Render Loop
     animate();
   }
 
-  function setupLighting() {
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+  function setupStudioLighting() {
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
     scene.add(ambientLight);
 
-    // Luz principal Blanca/Plata estilo Apple
-    const mainLight = new THREE.DirectionalLight(0xffffff, 2.5);
-    mainLight.position.set(5, 8, 5);
-    scene.add(mainLight);
+    // Luz Key Principal Plata/Blanco estilo Apple
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.8);
+    keyLight.position.set(6, 8, 6);
+    scene.add(keyLight);
 
-    // Luz de Acento Rojo Simón Fitness (#E30613)
-    const redPointLight = new THREE.PointLight(0xE30613, 4, 25);
-    redPointLight.position.set(-4, -2, 4);
-    scene.add(redPointLight);
+    // Luz de Relleno Fría
+    const fillLight = new THREE.DirectionalLight(0x94a3b8, 1.2);
+    fillLight.position.set(-6, 4, 4);
+    scene.add(fillLight);
 
-    // Luz de Relleno Azul/Cyan sutil
-    const rimLight = new THREE.DirectionalLight(0x3b82f6, 1.2);
-    rimLight.position.set(-6, 4, -5);
-    scene.add(rimLight);
+    // Luz de Acento Rojo Simón Fitness (#E30613) en contorno
+    const redRimLight = new THREE.PointLight(0xE30613, 5, 20);
+    redRimLight.position.set(0, -3, 3);
+    scene.add(redRimLight);
   }
 
-  // --------------------------------------------------------------------------
-  // CREACIÓN DE MODELOS PROCEDURALES 3D ALTA FIDELIDAD
-  // --------------------------------------------------------------------------
-
   function createParticles() {
-    const count = 300;
+    const count = 250;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
-
-    const redColor = new THREE.Color(0xE30613);
-    const whiteColor = new THREE.Color(0xffffff);
 
     for (let i = 0; i < count; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 20;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+      positions[i * 3] = (Math.random() - 0.5) * 22;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 22;
       positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
-
-      const mixColor = Math.random() > 0.7 ? redColor : whiteColor;
-      colors[i * 3] = mixColor.r;
-      colors[i * 3 + 1] = mixColor.g;
-      colors[i * 3 + 2] = mixColor.b;
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
     const material = new THREE.PointsMaterial({
-      size: 0.06,
-      vertexColors: true,
+      size: 0.05,
+      color: 0xE30613,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.4,
       blending: THREE.AdditiveBlending
     });
 
@@ -146,216 +129,198 @@ window.SimonFitness3D = (function () {
     scene.add(particlesGroup);
   }
 
-  // HERO: Anillo Holográfico SF de Precisión
-  function createHeroRing() {
-    heroRingGroup = new THREE.Group();
+  // --------------------------------------------------------------------------
+  // MODELO 1: MANCUERNA METÁLICA REALISTA DE GIMNASIO (Reemplaza figura abstracta)
+  // --------------------------------------------------------------------------
+  function createDumbbellModel() {
+    dumbbellGroup = new THREE.Group();
 
-    // Torus principal de metal oscuro
-    const torusGeo = new THREE.TorusGeometry(2.5, 0.08, 32, 100);
-    const metalMat = new THREE.MeshStandardMaterial({
-      color: 0x1a1a24,
-      metalness: 0.9,
+    // Materiales Metálicos de Alta Fidelidad
+    const chromeBarMat = new THREE.MeshStandardMaterial({
+      color: 0xe2e8f0,
+      metalness: 0.95,
+      roughness: 0.15
+    });
+
+    const ironPlateMat = new THREE.MeshStandardMaterial({
+      color: 0x1e1e24,
+      metalness: 0.85,
+      roughness: 0.25
+    });
+
+    const redAccentMat = new THREE.MeshStandardMaterial({
+      color: 0xE30613,
+      metalness: 0.7,
       roughness: 0.2
     });
-    const ringMesh = new THREE.Mesh(torusGeo, metalMat);
-    heroRingGroup.add(ringMesh);
 
-    // Anillo interno brillante Neón Rojo
-    const innerRingGeo = new THREE.TorusGeometry(2.2, 0.03, 16, 80);
-    const redNeonMat = new THREE.MeshBasicMaterial({
-      color: 0xE30613,
-      wireframe: true
-    });
-    const innerRingMesh = new THREE.Mesh(innerRingGeo, redNeonMat);
-    heroRingGroup.add(innerRingMesh);
+    // 1. Barra Central con Agarres
+    const barGeo = new THREE.CylinderGeometry(0.12, 0.12, 3.4, 32);
+    const barMesh = new THREE.Mesh(barGeo, chromeBarMat);
+    barMesh.rotation.z = Math.PI / 2;
+    dumbbellGroup.add(barMesh);
 
-    // Isotipo central SF estilizado (Cubo central con acento rojo)
-    const cubeGeo = new THREE.OctahedronGeometry(0.8, 2);
-    const cubeMat = new THREE.MeshStandardMaterial({
-      color: 0xE30613,
-      metalness: 0.8,
-      roughness: 0.1,
-      emissive: 0x550005
-    });
-    const coreMesh = new THREE.Mesh(cubeGeo, cubeMat);
-    heroRingGroup.add(coreMesh);
+    // 2. Discos Izquierdos (Hexagonales)
+    for (let i = 0; i < 3; i++) {
+      const plateGeo = new THREE.CylinderGeometry(1.1 - i * 0.1, 1.1 - i * 0.1, 0.22, 6);
+      const plateMesh = new THREE.Mesh(plateGeo, ironPlateMat);
+      plateMesh.rotation.z = Math.PI / 2;
+      plateMesh.position.x = -0.9 - i * 0.26;
+      dumbbellGroup.add(plateMesh);
 
-    heroRingGroup.position.set(0, 0, 0);
-    modelsGroup.add(heroRingGroup);
+      // Anillo de acento rojo en el disco exterior
+      if (i === 0) {
+        const ringGeo = new THREE.TorusGeometry(1.12, 0.03, 16, 32);
+        const ringMesh = new THREE.Mesh(ringGeo, redAccentMat);
+        ringMesh.rotation.y = Math.PI / 2;
+        ringMesh.position.x = -0.78;
+        dumbbellGroup.add(ringMesh);
+      }
+    }
+
+    // 3. Discos Derechom (Hexagonales)
+    for (let i = 0; i < 3; i++) {
+      const plateGeo = new THREE.CylinderGeometry(1.1 - i * 0.1, 1.1 - i * 0.1, 0.22, 6);
+      const plateMesh = new THREE.Mesh(plateGeo, ironPlateMat);
+      plateMesh.rotation.z = Math.PI / 2;
+      plateMesh.position.x = 0.9 + i * 0.26;
+      dumbbellGroup.add(plateMesh);
+
+      if (i === 0) {
+        const ringGeo = new THREE.TorusGeometry(1.12, 0.03, 16, 32);
+        const ringMesh = new THREE.Mesh(ringGeo, redAccentMat);
+        ringMesh.rotation.y = Math.PI / 2;
+        ringMesh.position.x = 0.78;
+        dumbbellGroup.add(ringMesh);
+      }
+    }
+
+    // Posicionamiento Inicial de la Mancuerna en Pantalla
+    dumbbellGroup.position.set(0, 0, 0);
+    modelsGroup.add(dumbbellGroup);
   }
 
-  // SECCIÓN CINTAS DE CORRER 3D
+  // MODELO 2: CINTA DE CORRER 3D
   function createTreadmillModel() {
     treadmillGroup = new THREE.Group();
 
-    const darkMetal = new THREE.MeshStandardMaterial({ color: 0x16161a, metalness: 0.85, roughness: 0.2 });
-    const rubberMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0c, roughness: 0.9, metalness: 0.1 });
-    const redAccentMat = new THREE.MeshStandardMaterial({ color: 0xE30613, metalness: 0.5, roughness: 0.3 });
+    const darkMetal = new THREE.MeshStandardMaterial({ color: 0x18181f, metalness: 0.9, roughness: 0.2 });
+    const beltMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0d, roughness: 0.9 });
+    const redAccent = new THREE.MeshStandardMaterial({ color: 0xE30613, metalness: 0.6, roughness: 0.2 });
 
-    // Plataforma principal (Deck)
-    const deckGeo = new THREE.BoxGeometry(4.2, 0.25, 1.8);
-    const deckMesh = new THREE.Mesh(deckGeo, darkMetal);
-    treadmillGroup.add(deckMesh);
+    const deckGeo = new THREE.BoxGeometry(4.0, 0.2, 1.8);
+    const deck = new THREE.Mesh(deckGeo, darkMetal);
+    treadmillGroup.add(deck);
 
-    // Cinta de tapiz en movimiento
-    const beltGeo = new THREE.BoxGeometry(3.6, 0.27, 1.5);
-    const beltMesh = new THREE.Mesh(beltGeo, rubberMat);
-    treadmillGroup.add(beltMesh);
+    const beltGeo = new THREE.BoxGeometry(3.5, 0.22, 1.5);
+    const belt = new THREE.Mesh(beltGeo, beltMat);
+    treadmillGroup.add(belt);
 
-    // Raíles laterales de aluminio con acento rojo
-    const railLGeo = new THREE.BoxGeometry(4.2, 0.1, 0.15);
-    const railL = new THREE.Mesh(railLGeo, redAccentMat);
-    railL.position.set(0, 0.15, 0.8);
+    const railGeo = new THREE.BoxGeometry(4.0, 0.08, 0.12);
+    const railL = new THREE.Mesh(railGeo, redAccent);
+    railL.position.set(0, 0.12, 0.82);
     treadmillGroup.add(railL);
 
-    const railR = new THREE.Mesh(railLGeo, redAccentMat);
-    railR.position.set(0, 0.15, -0.8);
+    const railR = new THREE.Mesh(railGeo, redAccent);
+    railR.position.set(0, 0.12, -0.82);
     treadmillGroup.add(railR);
 
-    // Postes verticales del manillar
-    const postGeo = new THREE.CylinderGeometry(0.06, 0.06, 2.2, 16);
+    const postGeo = new THREE.CylinderGeometry(0.05, 0.05, 2.0, 16);
     const postL = new THREE.Mesh(postGeo, darkMetal);
-    postL.position.set(1.5, 1.1, 0.8);
+    postL.position.set(1.4, 1.0, 0.8);
     postL.rotation.z = -0.25;
     treadmillGroup.add(postL);
 
     const postR = new THREE.Mesh(postGeo, darkMetal);
-    postR.position.set(1.5, 1.1, -0.8);
+    postR.position.set(1.4, 1.0, -0.8);
     postR.rotation.z = -0.25;
     treadmillGroup.add(postR);
 
-    // Consola digital táctil futurista
-    const consoleGeo = new THREE.BoxGeometry(0.8, 0.6, 1.6);
+    const consoleGeo = new THREE.BoxGeometry(0.6, 0.5, 1.4);
     const consoleMesh = new THREE.Mesh(consoleGeo, darkMetal);
-    consoleMesh.position.set(1.8, 2.0, 0);
+    consoleMesh.position.set(1.6, 1.8, 0);
     consoleMesh.rotation.z = -0.2;
     treadmillGroup.add(consoleMesh);
 
-    // Pantalla LED interactiva
-    const screenGeo = new THREE.PlaneGeometry(0.5, 1.3);
-    const screenMat = new THREE.MeshBasicMaterial({ color: 0xE30613 });
-    const screenMesh = new THREE.Mesh(screenGeo, screenMat);
-    screenMesh.position.set(1.79, 2.0, 0);
-    screenMesh.rotation.y = -Math.PI / 2;
-    screenMesh.rotation.x = 0.2;
-    treadmillGroup.add(screenMesh);
-
-    treadmillGroup.position.set(15, -1, 0); // Posición inicial fuera de pantalla
+    treadmillGroup.position.set(20, -1, 0); // Fuera de pantalla inicialmente
     modelsGroup.add(treadmillGroup);
   }
 
-  // SECCIÓN ELÍPTICAS Y BICICLETAS 3D
+  // MODELO 3: ELÍPTICA 3D
   function createEllipticalModel() {
     ellipticalGroup = new THREE.Group();
 
-    const chromeMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.95, roughness: 0.1 });
-    const blackMat = new THREE.MeshStandardMaterial({ color: 0x111115, metalness: 0.7, roughness: 0.3 });
-    const redMat = new THREE.MeshStandardMaterial({ color: 0xE30613, metalness: 0.6, roughness: 0.2 });
+    const chromeMat = new THREE.MeshStandardMaterial({ color: 0xcbd5e1, metalness: 0.95, roughness: 0.1 });
+    const blackMat = new THREE.MeshStandardMaterial({ color: 0x111115, metalness: 0.8, roughness: 0.3 });
+    const redMat = new THREE.MeshStandardMaterial({ color: 0xE30613, metalness: 0.6 });
 
-    // Rueda de inercia (Flywheel)
-    const flywheelGeo = new THREE.CylinderGeometry(1.2, 1.2, 0.3, 32);
+    const flywheelGeo = new THREE.CylinderGeometry(1.1, 1.1, 0.28, 32);
     const flywheel = new THREE.Mesh(flywheelGeo, chromeMat);
     flywheel.rotation.x = Math.PI / 2;
-    flywheel.position.set(-1.2, 0, 0);
+    flywheel.position.set(-1.0, 0, 0);
     ellipticalGroup.add(flywheel);
 
-    // Disco protector externo de inercia
-    const discGeo = new THREE.TorusGeometry(1.25, 0.05, 16, 60);
+    const discGeo = new THREE.TorusGeometry(1.15, 0.04, 16, 60);
     const disc = new THREE.Mesh(discGeo, redMat);
     disc.position.copy(flywheel.position);
     ellipticalGroup.add(disc);
 
-    // Chasis principal arqueado
-    const frameGeo = new THREE.TorusGeometry(2.0, 0.08, 16, 40, Math.PI * 0.8);
+    const frameGeo = new THREE.TorusGeometry(1.8, 0.07, 16, 40, Math.PI * 0.8);
     const frame = new THREE.Mesh(frameGeo, blackMat);
     frame.rotation.z = Math.PI * 0.1;
     ellipticalGroup.add(frame);
 
-    // Pedales
-    const pedalGeo = new THREE.BoxGeometry(0.8, 0.1, 0.4);
-    const pedalL = new THREE.Mesh(pedalGeo, blackMat);
-    pedalL.position.set(-0.5, -0.8, 0.6);
-    ellipticalGroup.add(pedalL);
-
-    const pedalR = new THREE.Mesh(pedalGeo, blackMat);
-    pedalR.position.set(-1.5, -0.4, -0.6);
-    ellipticalGroup.add(pedalR);
-
-    // Brazos de palanca superiores
-    const armGeo = new THREE.CylinderGeometry(0.04, 0.04, 2.8, 16);
-    const armL = new THREE.Mesh(armGeo, chromeMat);
-    armL.position.set(0.5, 1.2, 0.5);
-    armL.rotation.z = -0.15;
-    ellipticalGroup.add(armL);
-
-    const armR = new THREE.Mesh(armGeo, chromeMat);
-    armR.position.set(0.5, 1.2, -0.5);
-    armR.rotation.z = 0.15;
-    ellipticalGroup.add(armR);
-
-    ellipticalGroup.position.set(-15, -1, 0);
+    ellipticalGroup.position.set(-20, -1, 0);
     modelsGroup.add(ellipticalGroup);
   }
 
-  // SECCIÓN MOTOR / DESPIECE MECÁNICO (Mantenimiento preventivo)
+  // MODELO 4: DESPIECE MECÁNICO (MOTOR 3D)
   function createMotorExplodedModel() {
     motorExplodedGroup = new THREE.Group();
 
-    const metalMat = new THREE.MeshStandardMaterial({ color: 0x2a2a35, metalness: 0.9, roughness: 0.2 });
-    const copperMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.8, roughness: 0.3 });
-    const redRingMat = new THREE.MeshStandardMaterial({ color: 0xE30613, metalness: 0.6, roughness: 0.2 });
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x27272a, metalness: 0.9, roughness: 0.2 });
+    const copperMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.85, roughness: 0.25 });
+    const redMat = new THREE.MeshStandardMaterial({ color: 0xE30613, metalness: 0.7 });
 
-    // Core central: Estator
-    const statorGeo = new THREE.CylinderGeometry(0.9, 0.9, 1.8, 32);
+    const statorGeo = new THREE.CylinderGeometry(0.8, 0.8, 1.6, 32);
     const stator = new THREE.Mesh(statorGeo, copperMat);
     motorExplodedGroup.add(stator);
     explodedParts.push({ mesh: stator, basePos: new THREE.Vector3(0, 0, 0), dir: new THREE.Vector3(0, 0, 0) });
 
-    // Carcasa externa izquierda
-    const housingLGeo = new THREE.CylinderGeometry(1.1, 1.1, 0.6, 32, 1, true);
-    const housingL = new THREE.Mesh(housingLGeo, metalMat);
-    housingL.position.set(0, 1.4, 0);
+    const housingGeo = new THREE.CylinderGeometry(1.0, 1.0, 0.5, 32, 1, true);
+    const housingL = new THREE.Mesh(housingGeo, metalMat);
+    housingL.position.set(0, 1.2, 0);
     motorExplodedGroup.add(housingL);
-    explodedParts.push({ mesh: housingL, basePos: new THREE.Vector3(0, 1.4, 0), dir: new THREE.Vector3(0, 1.8, 0) });
+    explodedParts.push({ mesh: housingL, basePos: new THREE.Vector3(0, 1.2, 0), dir: new THREE.Vector3(0, 1.6, 0) });
 
-    // Carcasa externa derecha
-    const housingR = new THREE.Mesh(housingLGeo, metalMat);
-    housingR.position.set(0, -1.4, 0);
+    const housingR = new THREE.Mesh(housingGeo, metalMat);
+    housingR.position.set(0, -1.2, 0);
     motorExplodedGroup.add(housingR);
-    explodedParts.push({ mesh: housingR, basePos: new THREE.Vector3(0, -1.4, 0), dir: new THREE.Vector3(0, -1.8, 0) });
+    explodedParts.push({ mesh: housingR, basePos: new THREE.Vector3(0, -1.2, 0), dir: new THREE.Vector3(0, -1.6, 0) });
 
-    // Rodamientos / Cojinetes metálicos (Bearings)
-    const bearingGeo = new THREE.TorusGeometry(0.5, 0.12, 16, 32);
-    const bearingTop = new THREE.Mesh(bearingGeo, redRingMat);
+    const bearingGeo = new THREE.TorusGeometry(0.45, 0.1, 16, 32);
+    const bearingTop = new THREE.Mesh(bearingGeo, redMat);
     bearingTop.rotation.x = Math.PI / 2;
-    bearingTop.position.set(0, 2.2, 0);
+    bearingTop.position.set(0, 1.9, 0);
     motorExplodedGroup.add(bearingTop);
-    explodedParts.push({ mesh: bearingTop, basePos: new THREE.Vector3(0, 2.2, 0), dir: new THREE.Vector3(0, 2.6, 0) });
+    explodedParts.push({ mesh: bearingTop, basePos: new THREE.Vector3(0, 1.9, 0), dir: new THREE.Vector3(0, 2.3, 0) });
 
-    const bearingBottom = new THREE.Mesh(bearingGeo, redRingMat);
-    bearingBottom.rotation.x = Math.PI / 2;
-    bearingBottom.position.set(0, -2.2, 0);
-    motorExplodedGroup.add(bearingBottom);
-    explodedParts.push({ mesh: bearingBottom, basePos: new THREE.Vector3(0, -2.2, 0), dir: new THREE.Vector3(0, -2.6, 0) });
-
-    // Eje central de transmisión (Rotor shaft)
-    const shaftGeo = new THREE.CylinderGeometry(0.18, 0.18, 5.0, 16);
-    const shaftMat = new THREE.MeshStandardMaterial({ color: 0xeeeeee, metalness: 0.95 });
+    const shaftGeo = new THREE.CylinderGeometry(0.15, 0.15, 4.2, 16);
+    const shaftMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.95 });
     const shaft = new THREE.Mesh(shaftGeo, shaftMat);
     motorExplodedGroup.add(shaft);
     explodedParts.push({ mesh: shaft, basePos: new THREE.Vector3(0, 0, 0), dir: new THREE.Vector3(0, 0, 0) });
 
-    motorExplodedGroup.position.set(0, -20, 0);
+    motorExplodedGroup.position.set(0, -25, 0);
     modelsGroup.add(motorExplodedGroup);
   }
 
   // --------------------------------------------------------------------------
-  // INTERPRETACIÓN DEL SCROLL Y ANIMACIÓN DE CÁMARA / ESCENA
+  // LÓGICA DE CONTROL POR SCROLL & EVITACIÓN DE SOLAPAMIENTO CON TEXTO
   // --------------------------------------------------------------------------
 
-  function setScrollProgress(progress, sectionIndex) {
+  function setScrollProgress(progress) {
     targetProgress = progress;
-    targetSection = sectionIndex;
   }
 
   function onMouseMove(event) {
@@ -380,60 +345,80 @@ window.SimonFitness3D = (function () {
   function animate() {
     requestAnimationFrame(animate);
 
-    // Lerp de progreso de scroll y ratón
+    // Lerp suave
     currentProgress += (targetProgress - currentProgress) * 0.08;
-    currentSection += (targetSection - currentSection) * 0.08;
     mouseX += (targetMouseX - mouseX) * 0.05;
     mouseY += (targetMouseY - mouseY) * 0.05;
 
-    // Rotación pasiva de partículas y efectos de fondo
-    if (particlesGroup) {
-      particlesGroup.rotation.y += 0.001;
-      particlesGroup.rotation.x = mouseY * 0.1;
+    const isDesktop = window.innerWidth >= 992;
+    const isMobile = window.innerWidth < 768;
+
+    // CONTROL DE VISIBILIDAD GLOBAL (Desaparece en Opiniones, Contacto y Footer)
+    // Progress va de 0 (inicio) a 1 (final). Las opiniones/contacto empiezan ~0.65.
+    let globalOpacity = 1;
+    if (currentProgress > 0.62) {
+      globalOpacity = Math.max(0, 1 - (currentProgress - 0.62) * 5);
     }
 
-    // TRANSICIONES DE ESCENA VINCULADAS AL SCROLL (Scrollytelling 3D)
-
-    // Sección 0: Hero (Anillo holográfico central)
-    if (heroRingGroup) {
-      heroRingGroup.rotation.y += 0.01;
-      heroRingGroup.rotation.x = mouseY * 0.3;
-      heroRingGroup.rotation.z = mouseX * 0.2;
-
-      // Al hacer scroll se aleja y escala suavemente
-      const heroScale = Math.max(0.1, 1 - currentProgress * 2.5);
-      heroRingGroup.scale.set(heroScale, heroScale, heroScale);
-      heroRingGroup.position.z = -currentProgress * 8;
+    if (canvas) {
+      canvas.style.opacity = globalOpacity.toFixed(2);
     }
 
-    // Sección 1 & 2: Cintas de Correr (Aparece girando desde la derecha)
+    // 1. MANCUERNA (Sección Hero: 0 - 0.22)
+    if (dumbbellGroup) {
+      dumbbellGroup.rotation.y += 0.008;
+      dumbbellGroup.rotation.x = 0.3 + mouseY * 0.2;
+      dumbbellGroup.rotation.z = mouseX * 0.2;
+
+      // En escritorio se desplaza a la derecha para no tapar el texto
+      const posX = isDesktop ? 2.8 : 0;
+      const posY = isMobile ? -1.8 : 0;
+      
+      // Escalado y desvanecimiento al bajar
+      const scale = Math.max(0, 1 - currentProgress * 3.5);
+      dumbbellGroup.scale.set(scale, scale, scale);
+      dumbbellGroup.position.set(posX, posY, -currentProgress * 5);
+    }
+
+    // 2. CINTA DE CORRER (Sección Servicios: 0.18 - 0.42)
     if (treadmillGroup) {
-      const treadmillFactor = Math.max(0, Math.min(1, (currentProgress - 0.15) * 4));
-      const targetX = (1 - treadmillFactor) * 12 + (window.innerWidth < 768 ? 0 : 2.5);
-      treadmillGroup.position.x += (targetX - treadmillGroup.position.x) * 0.1;
-      treadmillGroup.position.y = -0.5 + Math.sin(Date.now() * 0.0015) * 0.1;
-      treadmillGroup.rotation.y = -0.6 + treadmillFactor * 1.8 + mouseX * 0.2;
-      treadmillGroup.rotation.x = 0.2 + mouseY * 0.1;
+      const factor = Math.max(0, Math.min(1, (currentProgress - 0.15) * 4));
+      const exitFactor = Math.max(0, Math.min(1, (currentProgress - 0.38) * 4));
+
+      const targetX = isDesktop ? 3.0 : 0;
+      const targetY = isMobile ? -2.0 : -0.4;
+
+      const inX = (1 - factor) * 15 + targetX;
+      const finalX = inX - exitFactor * 15;
+
+      treadmillGroup.position.x += (finalX - treadmillGroup.position.x) * 0.1;
+      treadmillGroup.position.y = targetY + Math.sin(Date.now() * 0.0015) * 0.08;
+      treadmillGroup.rotation.y = -0.5 + factor * 1.5 + mouseX * 0.2;
     }
 
-    // Sección 3: Elípticas y Bicicletas (Entra desde la izquierda)
+    // 3. ELÍPTICA (Sección Marcas / Por Qué Elegirnos: 0.35 - 0.58)
     if (ellipticalGroup) {
-      const ellipticalFactor = Math.max(0, Math.min(1, (currentProgress - 0.35) * 4));
-      const targetX = (-1 + ellipticalFactor) * -12 - (window.innerWidth < 768 ? 0 : 2.5);
-      ellipticalGroup.position.x += (targetX - ellipticalGroup.position.x) * 0.1;
-      ellipticalGroup.position.y = -0.4 + Math.cos(Date.now() * 0.0015) * 0.1;
-      ellipticalGroup.rotation.y = 0.8 - ellipticalFactor * 2.0 + mouseX * 0.2;
+      const factor = Math.max(0, Math.min(1, (currentProgress - 0.32) * 4));
+      const exitFactor = Math.max(0, Math.min(1, (currentProgress - 0.52) * 4));
+
+      const targetX = isDesktop ? -3.2 : 0;
+      const inX = (-1 + factor) * -15 + targetX;
+      const finalX = inX + exitFactor * 15;
+
+      ellipticalGroup.position.x += (finalX - ellipticalGroup.position.x) * 0.1;
+      ellipticalGroup.position.y = -0.4 + Math.cos(Date.now() * 0.0015) * 0.08;
+      ellipticalGroup.rotation.y = 0.8 - factor * 1.8 + mouseX * 0.2;
     }
 
-    // Sección 4: Motor & Despiece Mecánico (Exploded View en mantenimiento)
+    // 4. DESPIECE DE MOTOR (Sección Diagnóstico: 0.50 - 0.65)
     if (motorExplodedGroup) {
-      const motorFactor = Math.max(0, Math.min(1, (currentProgress - 0.6) * 3));
-      motorExplodedGroup.position.y = -15 + motorFactor * 15;
-      motorExplodedGroup.rotation.y += 0.008;
-      motorExplodedGroup.rotation.z = Math.PI / 4;
+      const factor = Math.max(0, Math.min(1, (currentProgress - 0.48) * 4));
+      const exitFactor = Math.max(0, Math.min(1, (currentProgress - 0.62) * 4));
 
-      // Efecto Exploded View (Las piezas se desensamblan según el scroll)
-      const explodeAmount = Math.sin(motorFactor * Math.PI) * 1.2;
+      motorExplodedGroup.position.y = -20 + factor * 20 - exitFactor * 20;
+      motorExplodedGroup.rotation.y += 0.008;
+
+      const explodeAmount = Math.sin(factor * Math.PI) * 1.0;
       explodedParts.forEach(part => {
         part.mesh.position.set(
           part.basePos.x + part.dir.x * explodeAmount,
@@ -443,9 +428,9 @@ window.SimonFitness3D = (function () {
       });
     }
 
-    // Control de cámara sutil según ratón
-    camera.position.x = mouseX * 0.5;
-    camera.position.y = -mouseY * 0.5;
+    // Render de cámara
+    camera.position.x = mouseX * 0.4;
+    camera.position.y = -mouseY * 0.4;
     camera.lookAt(0, 0, 0);
 
     renderer.render(scene, camera);

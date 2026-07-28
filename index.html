@@ -131,7 +131,7 @@
 </head>
 <body>
 
-  <!-- Lienzo WebGL 3D Fijo de Fondo (Three.js) -->
+  <!-- Lienzo WebGL 3D Fijo de Fondo Transparente (Three.js) -->
   <canvas id="webgl-canvas"></canvas>
 
   <!-- Navbar / Header de Estilo Apple Limpio -->
@@ -166,9 +166,10 @@
   <!-- Contenedor Principal de Scrollytelling -->
   <main class="scrollytelling-container">
 
-    <!-- SECCIÓN 1: HERO (ESTRUCTURA DE 2 COLUMNAS EN ESCRITORIO) -->
+    <!-- SECCIÓN 1: HERO (DISPOSICIÓN CLARA DE 2 COLUMNAS) -->
     <section class="hero-section" id="inicio">
-      <div class="hero-content-grid">
+      <div class="grid-2-columns">
+        <!-- COLUMNA 1: TEXTO & CTAS -->
         <div class="hero-text-col">
           <h1 class="hero-title">
             SIMON <span class="accent-red">FITNESS</span>
@@ -189,7 +190,7 @@
             </a>
           </div>
 
-          <!-- Tarjetas de Métricas Animadas -->
+          <!-- Métricas Animadas -->
           <div class="hero-metrics-grid">
             <div class="metric-card">
               <div class="metric-number" data-target="15" data-suffix="+">0</div>
@@ -205,7 +206,7 @@
             </div>
           </div>
 
-          <!-- Destacados Rápidos de Garantía -->
+          <!-- Badges de Garantía -->
           <div class="hero-quick-highlights">
             <div class="highlight-badge">
               <i class="fa-solid fa-bolt" style="color: #fbbf24;"></i>
@@ -217,10 +218,13 @@
             </div>
           </div>
         </div>
+
+        <!-- COLUMNA 2: ESPACIO LIBRE PARA EL MODELO 3D (MANCUERNA METÁLICA) -->
+        <div class="3d-viewport-placeholder"></div>
       </div>
     </section>
 
-    <!-- SECCIÓN 2: SERVICIOS DESTACADOS (Sincronizado con 3D Canvas) -->
+    <!-- SECCIÓN 2: SERVICIOS DESTACADOS -->
     <section class="content-section" id="servicios">
       <div class="section-container">
         <div class="section-header">
@@ -364,8 +368,8 @@
       </div>
     </section>
 
-    <!-- SECCIÓN 5: RESEÑAS Y OPINIONES (Fondo Sólido) -->
-    <section class="content-section reviews-section" id="opiniones">
+    <!-- SECCIÓN 5: RESEÑAS Y OPINIONES -->
+    <section class="content-section" id="opiniones">
       <div class="section-container">
         <div class="section-header">
           <div class="section-tagline">Testimonios Reales</div>
@@ -425,8 +429,8 @@
       </div>
     </section>
 
-    <!-- SECCIÓN 6: FORMULARIO DE CONTACTO Y FOOTER (Fondo Sólido) -->
-    <section class="content-section contact-section" id="contacto">
+    <!-- SECCIÓN 6: FORMULARIO DE CONTACTO Y FOOTER -->
+    <section class="content-section" id="contacto">
       <div class="section-container">
         <div class="section-header">
           <div class="section-tagline">Asistencia Inmediata</div>

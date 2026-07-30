@@ -166,10 +166,10 @@
   <!-- Contenedor Principal de Scrollytelling -->
   <main class="scrollytelling-container">
 
-    <!-- SECCIÓN 1: HERO (DISPOSICIÓN CLARA DE 2 COLUMNAS) -->
+    <!-- SECCIÓN 1: HERO (2 COLUMNAS EN ESCRITORIO / REORDENADO EN MÓVIL) -->
     <section class="hero-section" id="inicio">
       <div class="grid-2-columns">
-        <!-- COLUMNA 1: TEXTO & CTAS -->
+        <!-- COLUMNA 1: TITULAR, SUBTÍTULO, ESPACIO 3D MÓVIL, BOTONES & MÉTRICAS -->
         <div class="hero-text-col">
           <h1 class="hero-title">
             SIMON <span class="accent-red">FITNESS</span>
@@ -178,6 +178,9 @@
           <p class="hero-subtitle-seo">
             Servicio Técnico Oficial en Murcia y Alicante. Especializados en la reparación de cintas de correr, elípticas, bicicletas estáticas y mantenimiento preventivo de gimnasios. Más de 15 años de experiencia comprobada.
           </p>
+
+          <!-- Espaciador reservado para la escena 3D en móvil (Order 3 en CSS) -->
+          <div class="hero-3d-spacer"></div>
 
           <div class="hero-cta-group">
             <a href="#contacto" class="btn-cta-apple">
@@ -219,8 +222,8 @@
           </div>
         </div>
 
-        <!-- COLUMNA 2: ESPACIO LIBRE PARA EL MODELO 3D (MANCUERNA METÁLICA) -->
-        <div class="3d-viewport-placeholder"></div>
+        <!-- COLUMNA 2: ESPACIO DEDICADO AL MODELO 3D EN ESCRITORIO -->
+        <div class="desktop-3d-placeholder"></div>
       </div>
     </section>
 

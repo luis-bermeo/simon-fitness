@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SIMÓN FITNESS - STYLESHEET (v2.2 Transparent & 2-Column Grid Layout)
+   SIMÓN FITNESS - STYLESHEET (v2.3 Apple Grid & Mobile First Layout)
    ========================================================================== */
 
 /* Reset & Global Defaults */
@@ -42,7 +42,7 @@ body {
   height: 100vh;
   z-index: var(--z-canvas);
   pointer-events: none;
-  transition: opacity 0.6s ease;
+  transition: opacity 0.5s ease;
 }
 
 a {
@@ -52,7 +52,7 @@ a {
 }
 
 /* ==========================================================================
-   HEADER & NAVBAR (Minimalista Transparente)
+   HEADER & NAVBAR (Apple Minimal Transparente)
    ========================================================================== */
 
 .site-header {
@@ -66,21 +66,20 @@ a {
 }
 
 .site-header.scrolled {
-  background-color: rgba(6, 6, 8, 0.75);
+  background-color: rgba(6, 6, 8, 0.85);
   backdrop-filter: var(--blur-nav);
   -webkit-backdrop-filter: var(--blur-nav);
   border-bottom: var(--border-glass);
 }
 
 .header-container {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-/* Isotipo "SF" Limpio */
 .brand-isotype {
   display: flex;
   align-items: center;
@@ -164,7 +163,7 @@ a {
 }
 
 /* ==========================================================================
-   SCROLLYTELLING CONTAINER & LAYOUT DE 2 COLUMNAS (TEXTO | 3D VIEWPORT)
+   LAYOUT GRID EN 2 COLUMNAS Y CONTENCIÓN DE PANTALLA ULTRA-ANCHA
    ========================================================================== */
 
 .scrollytelling-container {
@@ -173,36 +172,42 @@ a {
   width: 100%;
 }
 
-/* ESTRUCTURA CLARA DE 2 COLUMNAS EN HERO Y SECCIONES */
 .grid-2-columns {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-xl);
+  gap: var(--space-lg);
   align-items: center;
   width: 100%;
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1024px) {
   .grid-2-columns {
     grid-template-columns: 1.1fr 0.9fr;
   }
 }
 
-/* HERO SECTION DE 2 COLUMNAS */
+/* HERO SECTION - REORDENAMIENTO EN MÓVILES */
 .hero-section {
   position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--space-hero) + 20px) var(--space-md) var(--space-xl);
+  padding: calc(var(--space-hero) + 10px) var(--space-md) var(--space-xl);
 }
 
 .hero-text-col {
-  text-align: left;
-  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .hero-text-col {
+    text-align: left;
+  }
 }
 
 .hero-title {
@@ -214,7 +219,8 @@ a {
   background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-xs);
+  order: 1;
 }
 
 .hero-title span.accent-red {
@@ -227,24 +233,48 @@ a {
   font-size: var(--text-lg);
   font-weight: 500;
   color: var(--color-text-subtle);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-md);
   line-height: 1.5;
+  order: 2;
+}
+
+/* Espacio Falso reservado para el modelo 3D en móvil y escritorio */
+.hero-3d-spacer {
+  height: 220px;
+  width: 100%;
+  pointer-events: none;
+  order: 3;
+}
+
+@media (min-width: 1024px) {
+  .hero-3d-spacer {
+    display: none;
+  }
 }
 
 .hero-cta-group {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: var(--space-sm);
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-lg);
+  order: 4;
+}
+
+@media (min-width: 1024px) {
+  .hero-cta-group {
+    justify-content: flex-start;
+  }
 }
 
 /* MÉTRICAS & TARJETAS DE GARANTÍA */
 .hero-metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: var(--space-sm);
   width: 100%;
+  order: 5;
 }
 
 .metric-card {
@@ -276,8 +306,16 @@ a {
 .hero-quick-highlights {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-sm);
   margin-top: var(--space-md);
+  order: 6;
+}
+
+@media (min-width: 1024px) {
+  .hero-quick-highlights {
+    justify-content: flex-start;
+  }
 }
 
 .highlight-badge {
@@ -293,20 +331,26 @@ a {
   color: var(--color-text-subtle);
 }
 
-/* Espacio Falso reservado en la columna derecha para alineación limpia */
-.3d-viewport-placeholder {
-  min-height: 400px;
-  width: 100%;
-  pointer-events: none;
+.desktop-3d-placeholder {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .desktop-3d-placeholder {
+    display: block;
+    min-height: 450px;
+    width: 100%;
+    pointer-events: none;
+  }
 }
 
 /* ==========================================================================
-   SECCIONES Y TARJETAS TRANSPARENTES
+   SECCIONES Y TARJETAS GRID ESTILO APPLE
    ========================================================================== */
 
 .content-section {
   position: relative;
-  min-height: 90vh;
+  min-height: 85vh;
   padding: var(--space-2xl) var(--space-md);
   display: flex;
   align-items: center;
@@ -315,7 +359,7 @@ a {
 
 .section-container {
   width: 100%;
-  max-width: 1240px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -349,18 +393,18 @@ a {
   color: var(--color-text-subtle);
 }
 
-/* SERVICIOS EN TARJETAS TRANSPARENTES ESMERILADAS */
+/* SERVICIOS EN GRID RESPONSIVO */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--space-lg);
 }
 
 .service-card-apple {
   position: relative;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: var(--blur-card);
-  -webkit-backdrop-filter: var(--blur-card);
+  background: rgba(13, 13, 18, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: var(--border-glass-bright);
   border-radius: var(--radius-xl);
   padding: var(--space-lg);
@@ -434,7 +478,7 @@ a {
   padding: var(--space-lg) 0;
   border-top: var(--border-glass);
   border-bottom: var(--border-glass);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(6, 6, 8, 0.8);
   backdrop-filter: blur(12px);
   overflow: hidden;
 }
@@ -465,7 +509,7 @@ a {
 
 /* POR QUÉ ELEGIRNOS */
 .why-us-quote-box {
-  background: linear-gradient(135deg, rgba(227, 6, 19, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
+  background: linear-gradient(135deg, rgba(227, 6, 19, 0.15) 0%, rgba(13, 13, 18, 0.85) 100%);
   border: var(--border-red-accent);
   border-radius: var(--radius-xl);
   padding: var(--space-lg);
@@ -489,7 +533,7 @@ a {
 }
 
 .why-us-card {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(13, 13, 18, 0.85);
   backdrop-filter: blur(16px);
   border: var(--border-glass);
   border-radius: var(--radius-lg);
@@ -515,16 +559,15 @@ a {
   color: var(--color-text-subtle);
 }
 
-/* RESEÑAS / TESTIMONIOS (TRANSPARENTE ESMERILADO) */
+/* RESEÑAS Y CONTACTO (TARJETAS SOLIDAS ALTO CONTRASTE PARA CERO SOLAPAMIENTO) */
 .reviews-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--space-lg);
 }
 
 .review-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
+  background: rgba(18, 18, 24, 0.95);
   border: var(--border-glass-bright);
   border-radius: var(--radius-xl);
   padding: var(--space-lg);
@@ -574,7 +617,6 @@ a {
   color: var(--color-text-subtle);
 }
 
-/* CONTACTO Y FORMULARIO FUTURISTA */
 .contact-layout {
   display: grid;
   grid-template-columns: 1fr;
@@ -594,8 +636,7 @@ a {
 }
 
 .contact-method-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
+  background: rgba(18, 18, 24, 0.95);
   border: var(--border-glass);
   border-radius: var(--radius-lg);
   padding: var(--space-md);
@@ -628,8 +669,7 @@ a {
 }
 
 .contact-form-glass {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(24px);
+  background: rgba(18, 18, 24, 0.98);
   border: var(--border-glass-bright);
   border-radius: var(--radius-xl);
   padding: var(--space-xl) var(--space-lg);
@@ -650,7 +690,7 @@ a {
 .form-input, .form-select, .form-textarea {
   width: 100%;
   padding: 14px 18px;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.5);
   border: var(--border-glass);
   border-radius: var(--radius-md);
   color: var(--color-text-main);
@@ -731,7 +771,7 @@ a {
 .site-footer {
   border-top: var(--border-glass);
   padding: var(--space-2xl) var(--space-md) var(--space-lg);
-  background: rgba(6, 6, 8, 0.95);
+  background: #040406;
   position: relative;
   z-index: 10;
 }

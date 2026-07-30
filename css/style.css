@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SIMÓN FITNESS - STYLESHEET (v3.1 Unbounded 3D & Clean Zig-Zag Layout)
+   SIMÓN FITNESS - STYLESHEET (v3.3 Multi-Canvas Slots Sin Cajas ni Bordes)
    ========================================================================== */
 
 /* Reset & Global Defaults */
@@ -31,18 +31,6 @@ body {
 ::selection {
   background: var(--color-primary-red);
   color: #ffffff;
-}
-
-/* Canvas WebGL de Fondo Fijo Transparente para Objetos 3D Sueltos Grandes */
-#webgl-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: var(--z-canvas);
-  pointer-events: none;
-  transition: opacity 0.5s ease;
 }
 
 a {
@@ -163,7 +151,7 @@ a {
 }
 
 /* ==========================================================================
-   SISTEMA DE LAYOUT ZIG-ZAG (OBJETOS 3D SUELTOS SIN CAJAS)
+   SLOTS 3D SUELTOS Y LAYOUT ZIG-ZAG (SIN CAJAS NI BORDES)
    ========================================================================== */
 
 .scrollytelling-container {
@@ -188,6 +176,7 @@ a {
   }
 }
 
+/* Inversión de Zig-Zag en Escritorio */
 @media (min-width: 992px) {
   .grid-reverse > :first-child {
     order: 2;
@@ -197,6 +186,36 @@ a {
   }
 }
 
+/* SLOTS 3D SUELTOS EN LA GRID (SIN CAJAS) */
+.3d-slot {
+  width: 100%;
+  height: 380px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+@media (max-width: 767px) {
+  .3d-slot {
+    height: 280px;
+  }
+}
+
+.clean-3d-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+/* SECCIONES PRINCIPALES */
 .content-section {
   position: relative;
   padding: var(--space-2xl) var(--space-md);
@@ -208,13 +227,6 @@ a {
 .hero-section {
   padding-top: calc(var(--space-hero) + 20px);
   min-height: 95vh;
-}
-
-/* Espacio Falso reservado en la grid para que el modelo 3D suelto gire libremente */
-.viewport-3d-space {
-  min-height: 380px;
-  width: 100%;
-  pointer-events: none;
 }
 
 /* ==========================================================================

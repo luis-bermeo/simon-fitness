@@ -103,9 +103,6 @@
 </head>
 <body>
 
-  <!-- Lienzo WebGL 3D Fijo de Fondo Transparente para Objetos Grandes Sueltos -->
-  <canvas id="webgl-canvas"></canvas>
-
   <!-- Navbar / Header de Estilo Apple Limpio -->
   <header class="site-header">
     <div class="header-container">
@@ -138,16 +135,17 @@
   <!-- Contenedor Principal de Scrollytelling & Layout Zig-Zag -->
   <main class="scrollytelling-container">
 
-    <!-- SECCIÓN 1: HERO (TEXTO IZQUIERDA | MODELO 3D SUELTO MANCUERNA DERECHA) -->
+    <!-- SECCIÓN 1: HERO (ZIG-ZAG LAYOUT: TEXTO IZQUIERDA | HUECO 3D MANCUERNA DERECHA) -->
     <section class="hero-section content-section" id="inicio">
       <div class="grid-2-columns">
+        <!-- COLUMNA IZQUIERDA: TEXTO & METRICAS -->
         <div class="hero-text-col fade-in-up">
           <h1 class="hero-title">
             SIMON <span class="accent-red">FITNESS</span>
           </h1>
 
           <p class="hero-subtitle-seo">
-            Servicio Técnico Oficial en Murcia y Alicante. Especializados en la reparación de cintas de correr, elípticas, bicicletas estáticas y mantenimiento preventivo de gimnasios. Más de 15 años de experiencia comprobada.
+            Servicio Técnico Oficial en Murcia y Alicante. Especializados en la reparación de cintas de correr, elípticas, bicicletas estáticas y mantenimiento preventivo de gimnasios. Más de 15 años de experiencia técnica comprobada.
           </p>
 
           <div class="hero-cta-group">
@@ -190,8 +188,10 @@
           </div>
         </div>
 
-        <!-- ESPACIO 3D SUELTO MANCUERNA GRANDE -->
-        <div class="viewport-3d-space"></div>
+        <!-- COLUMNA DERECHA: SLOT 3D MANCUERNA METÁLICA (ESTÁTICA Y SUELTA SIN CAJAS) -->
+        <div class="3d-slot fade-in-up">
+          <canvas id="hero-3d-canvas" class="clean-3d-canvas"></canvas>
+        </div>
       </div>
     </section>
 
@@ -223,7 +223,7 @@
           <p class="section-desc">Soluciones integrales de reparación para equipamiento doméstico y profesional de gimnasios.</p>
         </div>
 
-        <!-- ZIG-ZAG 1: CINTAS DE CORRER (TEXTO IZQUIERDA | MODELO 3D CINTA DERECHA) -->
+        <!-- ZIG-ZAG 1: CINTAS DE CORRER (TEXTO IZQUIERDA | SLOT 3D CINTA DERECHA) -->
         <div class="grid-2-columns" style="margin-bottom: var(--space-2xl);">
           <div class="service-card-box fade-in-up">
             <span class="service-location-tag">Cobertura en Murcia</span>
@@ -244,14 +244,18 @@
             </div>
           </div>
 
-          <!-- ESPACIO 3D SUELTO CINTA GRANDE -->
-          <div class="viewport-3d-space"></div>
+          <!-- SLOT 3D CINTA DE CORRER (ESTÁTICA Y SUELTA SIN CAJAS) -->
+          <div class="3d-slot fade-in-up">
+            <canvas id="service1-3d-canvas" class="clean-3d-canvas"></canvas>
+          </div>
         </div>
 
-        <!-- ZIG-ZAG 2: BICICLETAS ESTÁTICAS (MODELO 3D BICI IZQUIERDA | TEXTO DERECHA) -->
+        <!-- ZIG-ZAG 2: BICICLETAS ESTÁTICAS (SLOT 3D BICI IZQUIERDA | TEXTO DERECHA) -->
         <div class="grid-2-columns grid-reverse">
-          <!-- ESPACIO 3D SUELTO BICICLETA GRANDE -->
-          <div class="viewport-3d-space"></div>
+          <!-- SLOT 3D BICICLETA ESTÁTICA (ESTÁTICA Y SUELTA SIN CAJAS) -->
+          <div class="3d-slot fade-in-up">
+            <canvas id="service2-3d-canvas" class="clean-3d-canvas"></canvas>
+          </div>
 
           <div class="service-card-box fade-in-up">
             <span class="service-location-tag">Cobertura en Alicante</span>

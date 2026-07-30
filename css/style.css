@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SIMÓN FITNESS - STYLESHEET (v3.3 Multi-Canvas Slots Sin Cajas ni Bordes)
+   SIMÓN FITNESS - STYLESHEET (v3.4 Responsive Glass Panels & Large 3D Models)
    ========================================================================== */
 
 /* Reset & Global Defaults */
@@ -151,7 +151,7 @@ a {
 }
 
 /* ==========================================================================
-   SLOTS 3D SUELTOS Y LAYOUT ZIG-ZAG (SIN CAJAS NI BORDES)
+   SLOTS 3D Y LAYOUT ZIG-ZAG (SINTAXIS CSS VÁLIDA: .slot-3d)
    ========================================================================== */
 
 .scrollytelling-container {
@@ -186,24 +186,21 @@ a {
   }
 }
 
-/* SLOTS 3D SUELTOS EN LA GRID (SIN CAJAS) */
-.3d-slot {
+/* PANECIENTES CON FONDO TRASLÚCIDO APPLE */
+.slot-3d {
   width: 100%;
-  height: 380px;
+  height: 420px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  outline: none;
-}
-
-@media (max-width: 767px) {
-  .3d-slot {
-    height: 280px;
-  }
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
 
 .clean-3d-canvas {
@@ -213,6 +210,50 @@ a {
   background: transparent;
   border: none;
   outline: none;
+}
+
+/* ADAPTACIÓN MÓVIL (< 992px) */
+@media (max-width: 991px) {
+  .clean-3d-canvas {
+    display: none !important;
+  }
+  .slot-3d {
+    height: auto;
+    min-height: 200px;
+    padding: var(--space-lg);
+  }
+  .mobile-fallback-content {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-xs);
+  }
+}
+
+@media (min-width: 992px) {
+  .mobile-fallback-content {
+    display: none !important;
+  }
+}
+
+.fallback-icon-bubble {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(227, 6, 19, 0.15);
+  border: var(--border-red-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: var(--color-primary-red);
+}
+
+.fallback-badge-title {
+  font-family: var(--font-family-display);
+  font-size: var(--text-base);
+  font-weight: 700;
 }
 
 /* SECCIONES PRINCIPALES */

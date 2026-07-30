@@ -1,22 +1,34 @@
 /**
- * SIMÓN FITNESS - THREE.JS 3D SCENE ENGINE (v3.3 Multi-Canvas Slots Sin Cajas)
- * 3 escenas independientes renderizadas directamente en los huecos de la grid (slots).
- * Sin cajas, sin bordes, sin fondos, estáticas en su sección y de gran tamaño.
+ * SIMÓN FITNESS - THREE.JS 3D SCENE ENGINE (v3.4 High-Impact & Responsive)
+ * Modelos 3D Grandes, BOLD, Metálicos en slots transparentes con luz de estudio.
+ * Pausado en móvil (< 992px) para máxima velocidad y ahorro de batería.
  */
 
 window.SimonFitness3D = (function () {
   'use strict';
 
   const scenes = [];
+  let isMobile = false;
+
+  function checkMobile() {
+    isMobile = window.innerWidth < 992;
+  }
 
   function init() {
+    checkMobile();
+    window.addEventListener('resize', onWindowResize, false);
+
+    // En móviles (< 992px) desactivamos Three.js para no consumir recursos
+    if (isMobile) {
+      console.log('Modo Móvil Activo: Renderizado WebGL 3D pausado para 60 FPS y 0 lag.');
+      return;
+    }
+
     if (typeof THREE === 'undefined') return;
 
     setupHeroSlot();
     setupService1Slot();
     setupService2Slot();
-
-    window.addEventListener('resize', onWindowResize, false);
 
     animate();
   }
@@ -27,60 +39,58 @@ window.SimonFitness3D = (function () {
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const width = rect.width || 400;
-    const height = rect.height || 380;
+    const width = rect.width || 480;
+    const height = rect.height || 440;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0, 5.8);
+    camera.position.set(0, 0, 4.3); // Cámara cercana para modelo grande
 
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Luces de Estudio
-    const ambient = new THREE.AmbientLight(0xffffff, 1.3);
+    const ambient = new THREE.AmbientLight(0xffffff, 1.4);
     scene.add(ambient);
-    const mainLight = new THREE.DirectionalLight(0xffffff, 3.2);
+    const mainLight = new THREE.DirectionalLight(0xffffff, 3.5);
     mainLight.position.set(5, 6, 5);
     scene.add(mainLight);
-    const redLight = new THREE.PointLight(0xE30613, 5, 15);
+    const redLight = new THREE.PointLight(0xE30613, 6, 18);
     redLight.position.set(-2, -2, 3);
     scene.add(redLight);
 
-    // Modelo: Mancuerna Metálica Grande
     const dumbbellGroup = new THREE.Group();
-    const chromeMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.95, roughness: 0.15 });
-    const ironMat = new THREE.MeshStandardMaterial({ color: 0x1e1e24, metalness: 0.85, roughness: 0.25 });
-    const redMat = new THREE.MeshStandardMaterial({ color: 0xE30613, metalness: 0.7 });
+    const chromeMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.95, roughness: 0.1 });
+    const ironMat = new THREE.MeshStandardMaterial({ color: 0x1e1e24, metalness: 0.85, roughness: 0.2 });
+    const redMat = new THREE.MeshStandardMaterial({ color: 0xE30613, metalness: 0.7, roughness: 0.2 });
 
-    const barGeo = new THREE.CylinderGeometry(0.13, 0.13, 3.4, 32);
+    const barGeo = new THREE.CylinderGeometry(0.14, 0.14, 3.6, 32);
     const bar = new THREE.Mesh(barGeo, chromeMat);
     bar.rotation.z = Math.PI / 2;
     dumbbellGroup.add(bar);
 
     for (let i = 0; i < 3; i++) {
-      const plateGeo = new THREE.CylinderGeometry(1.1 - i * 0.09, 1.1 - i * 0.09, 0.24, 6);
+      const plateGeo = new THREE.CylinderGeometry(1.15 - i * 0.09, 1.15 - i * 0.09, 0.26, 6);
       const plateL = new THREE.Mesh(plateGeo, ironMat);
       plateL.rotation.z = Math.PI / 2;
-      plateL.position.x = -0.9 - i * 0.26;
+      plateL.position.x = -0.95 - i * 0.28;
       dumbbellGroup.add(plateL);
 
       const plateR = new THREE.Mesh(plateGeo, ironMat);
       plateR.rotation.z = Math.PI / 2;
-      plateR.position.x = 0.9 + i * 0.26;
+      plateR.position.x = 0.95 + i * 0.28;
       dumbbellGroup.add(plateR);
 
       if (i === 0) {
-        const ringGeo = new THREE.TorusGeometry(1.12, 0.03, 16, 32);
+        const ringGeo = new THREE.TorusGeometry(1.18, 0.035, 16, 32);
         const ringL = new THREE.Mesh(ringGeo, redMat);
         ringL.rotation.y = Math.PI / 2;
-        ringL.position.x = -0.76;
+        ringL.position.x = -0.8;
         dumbbellGroup.add(ringL);
 
         const ringR = new THREE.Mesh(ringGeo, redMat);
         ringR.rotation.y = Math.PI / 2;
-        ringR.position.x = 0.76;
+        ringR.position.x = 0.8;
         dumbbellGroup.add(ringR);
       }
     }
@@ -106,20 +116,20 @@ window.SimonFitness3D = (function () {
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const width = rect.width || 400;
-    const height = rect.height || 380;
+    const width = rect.width || 480;
+    const height = rect.height || 440;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0.8, 6.8);
+    camera.position.set(0, 0.6, 5.2);
 
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    const ambient = new THREE.AmbientLight(0xffffff, 1.3);
+    const ambient = new THREE.AmbientLight(0xffffff, 1.4);
     scene.add(ambient);
-    const mainLight = new THREE.DirectionalLight(0xffffff, 3.0);
+    const mainLight = new THREE.DirectionalLight(0xffffff, 3.2);
     mainLight.position.set(5, 6, 5);
     scene.add(mainLight);
 
@@ -128,37 +138,37 @@ window.SimonFitness3D = (function () {
     const beltMat = new THREE.MeshStandardMaterial({ color: 0x0f0f14, roughness: 0.9 });
     const redAccent = new THREE.MeshStandardMaterial({ color: 0xE30613, metalness: 0.6 });
 
-    const deckGeo = new THREE.BoxGeometry(3.8, 0.2, 1.7);
+    const deckGeo = new THREE.BoxGeometry(4.0, 0.22, 1.8);
     const deck = new THREE.Mesh(deckGeo, darkMetal);
     treadmillGroup.add(deck);
 
-    const beltGeo = new THREE.BoxGeometry(3.3, 0.22, 1.4);
+    const beltGeo = new THREE.BoxGeometry(3.5, 0.24, 1.5);
     const belt = new THREE.Mesh(beltGeo, beltMat);
     treadmillGroup.add(belt);
 
-    const railGeo = new THREE.BoxGeometry(3.8, 0.08, 0.11);
+    const railGeo = new THREE.BoxGeometry(4.0, 0.09, 0.12);
     const railL = new THREE.Mesh(railGeo, redAccent);
-    railL.position.set(0, 0.12, 0.78);
+    railL.position.set(0, 0.13, 0.82);
     treadmillGroup.add(railL);
 
     const railR = new THREE.Mesh(railGeo, redAccent);
-    railR.position.set(0, 0.12, -0.78);
+    railR.position.set(0, 0.13, -0.82);
     treadmillGroup.add(railR);
 
-    const postGeo = new THREE.CylinderGeometry(0.05, 0.05, 1.9, 16);
+    const postGeo = new THREE.CylinderGeometry(0.06, 0.06, 2.0, 16);
     const postL = new THREE.Mesh(postGeo, darkMetal);
-    postL.position.set(1.3, 1.0, 0.75);
+    postL.position.set(1.4, 1.1, 0.8);
     postL.rotation.z = -0.25;
     treadmillGroup.add(postL);
 
     const postR = new THREE.Mesh(postGeo, darkMetal);
-    postR.position.set(1.3, 1.0, -0.75);
+    postR.position.set(1.4, 1.1, -0.8);
     postR.rotation.z = -0.25;
     treadmillGroup.add(postR);
 
-    const consoleGeo = new THREE.BoxGeometry(0.55, 0.5, 1.3);
+    const consoleGeo = new THREE.BoxGeometry(0.6, 0.55, 1.35);
     const consoleMesh = new THREE.Mesh(consoleGeo, darkMetal);
-    consoleMesh.position.set(1.5, 1.8, 0);
+    consoleMesh.position.set(1.6, 1.9, 0);
     consoleMesh.rotation.z = -0.2;
     treadmillGroup.add(consoleMesh);
 
@@ -182,20 +192,20 @@ window.SimonFitness3D = (function () {
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const width = rect.width || 400;
-    const height = rect.height || 380;
+    const width = rect.width || 480;
+    const height = rect.height || 440;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0.6, 6.2);
+    camera.position.set(0, 0.5, 4.8);
 
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    const ambient = new THREE.AmbientLight(0xffffff, 1.3);
+    const ambient = new THREE.AmbientLight(0xffffff, 1.4);
     scene.add(ambient);
-    const mainLight = new THREE.DirectionalLight(0xffffff, 3.0);
+    const mainLight = new THREE.DirectionalLight(0xffffff, 3.2);
     mainLight.position.set(5, 6, 5);
     scene.add(mainLight);
 
@@ -204,37 +214,37 @@ window.SimonFitness3D = (function () {
     const blackMat = new THREE.MeshStandardMaterial({ color: 0x181820, metalness: 0.85, roughness: 0.25 });
     const redMat = new THREE.MeshStandardMaterial({ color: 0xE30613, metalness: 0.7 });
 
-    const flywheelGeo = new THREE.CylinderGeometry(1.1, 1.1, 0.18, 32);
+    const flywheelGeo = new THREE.CylinderGeometry(1.2, 1.2, 0.18, 32);
     const flywheel = new THREE.Mesh(flywheelGeo, chromeMat);
     flywheel.rotation.x = Math.PI / 2;
-    flywheel.position.set(1.0, 0, 0);
+    flywheel.position.set(1.1, 0, 0);
     bikeGroup.add(flywheel);
 
-    const discGeo = new THREE.TorusGeometry(1.12, 0.035, 16, 48);
+    const discGeo = new THREE.TorusGeometry(1.22, 0.038, 16, 48);
     const disc = new THREE.Mesh(discGeo, redMat);
     disc.position.copy(flywheel.position);
     bikeGroup.add(disc);
 
-    const frameGeo = new THREE.CylinderGeometry(0.07, 0.07, 2.4, 16);
+    const frameGeo = new THREE.CylinderGeometry(0.07, 0.07, 2.5, 16);
     const mainTube = new THREE.Mesh(frameGeo, blackMat);
     mainTube.rotation.z = -0.6;
-    mainTube.position.set(0.15, 0.45, 0);
+    mainTube.position.set(0.18, 0.5, 0);
     bikeGroup.add(mainTube);
 
     const seatPostGeo = new THREE.CylinderGeometry(0.05, 0.05, 1.5, 16);
     const seatPost = new THREE.Mesh(seatPostGeo, chromeMat);
-    seatPost.position.set(-0.55, 1.1, 0);
+    seatPost.position.set(-0.58, 1.15, 0);
     bikeGroup.add(seatPost);
 
-    const seatGeo = new THREE.BoxGeometry(0.55, 0.1, 0.32);
+    const seatGeo = new THREE.BoxGeometry(0.58, 0.1, 0.35);
     const seat = new THREE.Mesh(seatGeo, blackMat);
-    seat.position.set(-0.55, 1.8, 0);
+    seat.position.set(-0.58, 1.9, 0);
     bikeGroup.add(seat);
 
-    const handleBarGeo = new THREE.TorusGeometry(0.38, 0.035, 16, 32, Math.PI);
+    const handleBarGeo = new THREE.TorusGeometry(0.4, 0.038, 16, 32, Math.PI);
     const handleBar = new THREE.Mesh(handleBarGeo, redMat);
     handleBar.rotation.x = Math.PI / 2;
-    handleBar.position.set(0.8, 1.7, 0);
+    handleBar.position.set(0.85, 1.8, 0);
     bikeGroup.add(handleBar);
 
     scene.add(bikeGroup);
@@ -252,6 +262,9 @@ window.SimonFitness3D = (function () {
   }
 
   function onWindowResize() {
+    checkMobile();
+    if (isMobile) return;
+
     scenes.forEach(item => {
       if (!item.canvas) return;
       const rect = item.canvas.getBoundingClientRect();
@@ -265,6 +278,7 @@ window.SimonFitness3D = (function () {
 
   function animate() {
     requestAnimationFrame(animate);
+    if (isMobile) return;
 
     scenes.forEach(item => {
       if (item.update) item.update();

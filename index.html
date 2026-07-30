@@ -135,7 +135,7 @@
   <!-- Contenedor Principal de Scrollytelling & Layout Zig-Zag -->
   <main class="scrollytelling-container">
 
-    <!-- SECCIÓN 1: HERO (ZIG-ZAG LAYOUT: TEXTO IZQUIERDA | HUECO 3D MANCUERNA DERECHA) -->
+    <!-- SECCIÓN 1: HERO (ZIG-ZAG LAYOUT: TEXTO IZQUIERDA | PANEL 3D MANCUERNA DERECHA) -->
     <section class="hero-section content-section" id="inicio">
       <div class="grid-2-columns">
         <!-- COLUMNA IZQUIERDA: TEXTO & METRICAS -->
@@ -188,9 +188,16 @@
           </div>
         </div>
 
-        <!-- COLUMNA DERECHA: SLOT 3D MANCUERNA METÁLICA (ESTÁTICA Y SUELTA SIN CAJAS) -->
-        <div class="3d-slot fade-in-up">
+        <!-- COLUMNA DERECHA: PANEL 3D MANCUERNA METÁLICA (GRANDE & TRASLÚCIDO) -->
+        <div class="slot-3d fade-in-up">
           <canvas id="hero-3d-canvas" class="clean-3d-canvas"></canvas>
+          <div class="mobile-fallback-content">
+            <div class="fallback-icon-bubble">
+              <i class="fa-solid fa-dumbbell"></i>
+            </div>
+            <div class="fallback-badge-title">Ingeniería & Precisión Técnica</div>
+            <p style="font-size: var(--text-xs); color: var(--color-text-subtle);">Servicio profesional de reparación de gimnasios en Murcia y Alicante.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -223,7 +230,7 @@
           <p class="section-desc">Soluciones integrales de reparación para equipamiento doméstico y profesional de gimnasios.</p>
         </div>
 
-        <!-- ZIG-ZAG 1: CINTAS DE CORRER (TEXTO IZQUIERDA | SLOT 3D CINTA DERECHA) -->
+        <!-- ZIG-ZAG 1: CINTAS DE CORRER (TEXTO IZQUIERDA | PANEL 3D CINTA DERECHA) -->
         <div class="grid-2-columns" style="margin-bottom: var(--space-2xl);">
           <div class="service-card-box fade-in-up">
             <span class="service-location-tag">Cobertura en Murcia</span>
@@ -244,17 +251,31 @@
             </div>
           </div>
 
-          <!-- SLOT 3D CINTA DE CORRER (ESTÁTICA Y SUELTA SIN CAJAS) -->
-          <div class="3d-slot fade-in-up">
+          <!-- PANEL 3D CINTA DE CORRER (GRANDE & TRASLÚCIDO) -->
+          <div class="slot-3d fade-in-up">
             <canvas id="service1-3d-canvas" class="clean-3d-canvas"></canvas>
+            <div class="mobile-fallback-content">
+              <div class="fallback-icon-bubble">
+                <i class="fa-solid fa-person-running"></i>
+              </div>
+              <div class="fallback-badge-title">Especialistas en Cintas de Correr</div>
+              <p style="font-size: var(--text-xs); color: var(--color-text-subtle);">Reparación de placas electrónicas, motores y calibración de bandas.</p>
+            </div>
           </div>
         </div>
 
-        <!-- ZIG-ZAG 2: BICICLETAS ESTÁTICAS (SLOT 3D BICI IZQUIERDA | TEXTO DERECHA) -->
+        <!-- ZIG-ZAG 2: BICICLETAS ESTÁTICAS (PANEL 3D BICI IZQUIERDA | TEXTO DERECHA) -->
         <div class="grid-2-columns grid-reverse">
-          <!-- SLOT 3D BICICLETA ESTÁTICA (ESTÁTICA Y SUELTA SIN CAJAS) -->
-          <div class="3d-slot fade-in-up">
+          <!-- PANEL 3D BICICLETA ESTÁTICA (GRANDE & TRASLÚCIDO) -->
+          <div class="slot-3d fade-in-up">
             <canvas id="service2-3d-canvas" class="clean-3d-canvas"></canvas>
+            <div class="mobile-fallback-content">
+              <div class="fallback-icon-bubble">
+                <i class="fa-solid fa-bicycle"></i>
+              </div>
+              <div class="fallback-badge-title">Elípticas y Bicicletas Estáticas</div>
+              <p style="font-size: var(--text-xs); color: var(--color-text-subtle);">Sistemas de freno electromagnético, rodamientos y consolas digitales.</p>
+            </div>
           </div>
 
           <div class="service-card-box fade-in-up">

@@ -1,50 +1,37 @@
 /**
- * SIMÓN FITNESS - THREE.JS 3D SCENE ENGINE (v3.4 High-Impact & Responsive)
- * Modelos 3D Grandes, BOLD, Metálicos en slots transparentes con luz de estudio.
- * Pausado en móvil (< 992px) para máxima velocidad y ahorro de batería.
+ * SIMÓN FITNESS - THREE.JS 3D SCENE ENGINE (v4.0 Universal 3D Render)
+ * 3 Escenas 3D independientes sin cajas, sueltas, grandes y visibles en escritorio y móvil.
  */
 
 window.SimonFitness3D = (function () {
   'use strict';
 
   const scenes = [];
-  let isMobile = false;
-
-  function checkMobile() {
-    isMobile = window.innerWidth < 992;
-  }
 
   function init() {
-    checkMobile();
-    window.addEventListener('resize', onWindowResize, false);
-
-    // En móviles (< 992px) desactivamos Three.js para no consumir recursos
-    if (isMobile) {
-      console.log('Modo Móvil Activo: Renderizado WebGL 3D pausado para 60 FPS y 0 lag.');
-      return;
-    }
-
     if (typeof THREE === 'undefined') return;
 
     setupHeroSlot();
     setupService1Slot();
     setupService2Slot();
 
+    window.addEventListener('resize', onWindowResize, false);
+
     animate();
   }
 
-  // 1. HERO SLOT: MANCUERNA METÁLICA (#hero-3d-canvas)
+  // 1. HERO: MANCUERNA METÁLICA (#hero-3d-canvas)
   function setupHeroSlot() {
     const canvas = document.getElementById('hero-3d-canvas');
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const width = rect.width || 480;
-    const height = rect.height || 440;
+    const width = rect.width || 440;
+    const height = rect.height || 400;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0, 4.3); // Cámara cercana para modelo grande
+    camera.position.set(0, 0, 4.4);
 
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
     renderer.setSize(width, height);
@@ -62,7 +49,7 @@ window.SimonFitness3D = (function () {
     const dumbbellGroup = new THREE.Group();
     const chromeMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.95, roughness: 0.1 });
     const ironMat = new THREE.MeshStandardMaterial({ color: 0x1e1e24, metalness: 0.85, roughness: 0.2 });
-    const redMat = new THREE.MeshStandardMaterial({ color: 0xE30613, metalness: 0.7, roughness: 0.2 });
+    const redMat = new THREE.MeshStandardMaterial({ color: 0xE30613, metalness: 0.7 });
 
     const barGeo = new THREE.CylinderGeometry(0.14, 0.14, 3.6, 32);
     const bar = new THREE.Mesh(barGeo, chromeMat);
@@ -110,14 +97,14 @@ window.SimonFitness3D = (function () {
     });
   }
 
-  // 2. SERVICIO 1 SLOT: CINTA DE CORRER (#service1-3d-canvas)
+  // 2. SERVICIO 1: CINTA DE CORRER (#service1-3d-canvas)
   function setupService1Slot() {
     const canvas = document.getElementById('service1-3d-canvas');
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const width = rect.width || 480;
-    const height = rect.height || 440;
+    const width = rect.width || 440;
+    const height = rect.height || 400;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -186,14 +173,14 @@ window.SimonFitness3D = (function () {
     });
   }
 
-  // 3. SERVICIO 2 SLOT: BICICLETA ESTÁTICA (#service2-3d-canvas)
+  // 3. SERVICIO 2: BICICLETA ESTÁTICA (#service2-3d-canvas)
   function setupService2Slot() {
     const canvas = document.getElementById('service2-3d-canvas');
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const width = rect.width || 480;
-    const height = rect.height || 440;
+    const width = rect.width || 440;
+    const height = rect.height || 400;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -262,9 +249,6 @@ window.SimonFitness3D = (function () {
   }
 
   function onWindowResize() {
-    checkMobile();
-    if (isMobile) return;
-
     scenes.forEach(item => {
       if (!item.canvas) return;
       const rect = item.canvas.getBoundingClientRect();
@@ -278,7 +262,6 @@ window.SimonFitness3D = (function () {
 
   function animate() {
     requestAnimationFrame(animate);
-    if (isMobile) return;
 
     scenes.forEach(item => {
       if (item.update) item.update();

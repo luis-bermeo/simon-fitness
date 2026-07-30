@@ -1,7 +1,10 @@
 /**
- * SIMÓN FITNESS - THREE.JS 3D SCENE ENGINE (v3.1 Unbounded & Large 3D Models)
- * Objetos 3D sueltos sin cajas, tamaño grande, estáticos por sección en el layout Zig-Zag.
- * Desvanecimiento completo al 0% en secciones de reseñas, contacto y footer.
+ * SIMÓN FITNESS - THREE.JS 3D SCENE ENGINE (v3.2 All 3 Models Synchronized)
+ * Transición perfecta entre 3 modelos:
+ *  1. Hero: Mancuerna Metálica
+ *  2. Servicio 1: Cinta de Correr
+ *  3. Servicio 2: Bicicleta Estática / Spinning
+ * Desvanecimiento limpio solo a partir del 62% de scroll (Sección Reseñas / Contacto).
  */
 
 window.SimonFitness3D = (function () {
@@ -10,18 +13,15 @@ window.SimonFitness3D = (function () {
   let scene, camera, renderer;
   let canvas;
 
-  // Grupos 3D
   const modelsGroup = new THREE.Group();
   let dumbbellGroup = new THREE.Group();
   let treadmillGroup = new THREE.Group();
   let exerciseBikeGroup = new THREE.Group();
   let particlesGroup = new THREE.Group();
 
-  // Estado del Scroll interpolado (Lerp)
   let targetProgress = 0;
   let currentProgress = 0;
 
-  // Interacción del ratón
   let mouseX = 0;
   let mouseY = 0;
   let targetMouseX = 0;
@@ -37,7 +37,7 @@ window.SimonFitness3D = (function () {
     scene = new THREE.Scene();
 
     const aspect = window.innerWidth / window.innerHeight;
-    const initialFov = aspect < 1 ? Math.min(60, 45 / aspect) : 45;
+    const initialFov = aspect < 1 ? Math.min(65, 45 / aspect) : 45;
 
     camera = new THREE.PerspectiveCamera(initialFov, aspect, 0.1, 100);
     camera.position.set(0, 0, 10);
@@ -57,11 +57,11 @@ window.SimonFitness3D = (function () {
 
     setupStudioLighting();
 
-    // Modelos 3D Grandes y Detallados
+    // Crear los 3 Modelos 3D de Gran Tamaño
     createParticles();
-    createDumbbellModel();      // Hero: Mancuerna Metálica Grande
-    createTreadmillModel();     // Servicio 1: Cinta de Correr Grande
-    createExerciseBikeModel();  // Servicio 2: Bicicleta Estática Grande
+    createDumbbellModel();      // 1. Hero: Mancuerna Metálica
+    createTreadmillModel();     // 2. Servicio 1: Cinta de Correr
+    createExerciseBikeModel();  // 3. Servicio 2: Bicicleta Estática
 
     scene.add(modelsGroup);
 
@@ -69,7 +69,6 @@ window.SimonFitness3D = (function () {
     window.addEventListener('mousemove', onMouseMove, false);
     window.addEventListener('touchmove', onTouchMove, { passive: true });
 
-    // Iniciar loop
     animate();
   }
 
@@ -116,7 +115,7 @@ window.SimonFitness3D = (function () {
   }
 
   // --------------------------------------------------------------------------
-  // MODELO 1: MANCUERNA METÁLICA (GRANDE Y SUELTA)
+  // MODELO 1: MANCUERNA METÁLICA (HERO)
   // --------------------------------------------------------------------------
   function createDumbbellModel() {
     dumbbellGroup = new THREE.Group();
@@ -160,7 +159,7 @@ window.SimonFitness3D = (function () {
   }
 
   // --------------------------------------------------------------------------
-  // MODELO 2: CINTA DE CORRER (GRANDE Y SUELTA)
+  // MODELO 2: CINTA DE CORRER (SERVICIO 1 - CINTAS DE CORRER)
   // --------------------------------------------------------------------------
   function createTreadmillModel() {
     treadmillGroup = new THREE.Group();
@@ -203,12 +202,12 @@ window.SimonFitness3D = (function () {
     consoleMesh.rotation.z = -0.2;
     treadmillGroup.add(consoleMesh);
 
-    treadmillGroup.position.set(20, 0, 0);
+    treadmillGroup.position.set(25, 0, 0); // Posición inicial reservada a la derecha
     modelsGroup.add(treadmillGroup);
   }
 
   // --------------------------------------------------------------------------
-  // MODELO 3: BICICLETA ESTÁTICA (GRANDE Y SUELTA)
+  // MODELO 3: BICICLETA ESTÁTICA / SPINNING (SERVICIO 2 - BICICLETAS)
   // --------------------------------------------------------------------------
   function createExerciseBikeModel() {
     exerciseBikeGroup = new THREE.Group();
@@ -250,12 +249,12 @@ window.SimonFitness3D = (function () {
     handleBar.position.set(0.9, 1.9, 0);
     exerciseBikeGroup.add(handleBar);
 
-    exerciseBikeGroup.position.set(-20, 0, 0);
+    exerciseBikeGroup.position.set(-25, 0, 0); // Posición inicial reservada a la izquierda
     modelsGroup.add(exerciseBikeGroup);
   }
 
   // --------------------------------------------------------------------------
-  // INTERPRETACIÓN DE SCROLL & CONFIGURACIÓN RESPONSIVA LIMPULSA
+  // INTERPRETACIÓN DE SCROLL & SINCRONIZACIÓN DE LOS 3 MODELOS
   // --------------------------------------------------------------------------
 
   function setScrollProgress(progress) {
@@ -300,62 +299,71 @@ window.SimonFitness3D = (function () {
     mouseY += (targetMouseY - mouseY) * 0.05;
 
     const isDesktop = window.innerWidth >= 992;
-    const scaleFactor = isDesktop ? 1.0 : 0.6;
+    const scaleFactor = isDesktop ? 1.0 : 0.55;
 
-    // DESVANECIMIENTO TOTAL (Opacity 0) cuando el scroll supera el 42%
+    // CONTROL DE DESVANECIMIENTO GLOBAL:
+    // Solo cuando el scroll pasa del 58% (Sección Por Qué Elegirnos, Reseñas, Contacto)
     let globalOpacity = 1;
-    if (currentProgress > 0.40) {
-      globalOpacity = Math.max(0, 1 - (currentProgress - 0.40) * 8);
+    if (currentProgress > 0.58) {
+      globalOpacity = Math.max(0, 1 - (currentProgress - 0.58) * 8);
     }
 
     if (canvas) {
       canvas.style.opacity = globalOpacity.toFixed(2);
     }
 
-    // 1. HERO (MANCUERNA METÁLICA EN COLUMNA DERECHA)
+    // ------------------------------------------------------------------------
+    // 1. MANCUERNA METÁLICA (HERO: Progress 0.00 -> 0.22)
+    // ------------------------------------------------------------------------
     if (dumbbellGroup) {
       dumbbellGroup.rotation.y += 0.01;
       dumbbellGroup.rotation.x = 0.2 + mouseY * 0.2;
 
+      // Desvanecimiento suave al salir del Hero
+      const heroFade = Math.max(0, 1 - Math.max(0, (currentProgress - 0.14) * 8));
       const posX = isDesktop ? 3.0 : 0;
       const posY = isDesktop ? 0 : -1.8;
-      const scale = Math.max(0, scaleFactor - currentProgress * 3.0);
 
-      dumbbellGroup.scale.set(scale, scale, scale);
+      dumbbellGroup.scale.set(scaleFactor * heroFade, scaleFactor * heroFade, scaleFactor * heroFade);
       dumbbellGroup.position.set(posX, posY, 0);
     }
 
-    // 2. CINTA DE CORRER (SERVICIO 1 - COLUMNA DERECHA)
+    // ------------------------------------------------------------------------
+    // 2. CINTA DE CORRER (SERVICIO 1 - CINTAS: Progress 0.15 -> 0.38)
+    // ------------------------------------------------------------------------
     if (treadmillGroup) {
-      const factor = Math.max(0, Math.min(1, (currentProgress - 0.12) * 5));
-      const exitFactor = Math.max(0, Math.min(1, (currentProgress - 0.28) * 5));
+      // Aparición suave (inFactor) y salida suave (outFactor)
+      const inFactor = Math.max(0, Math.min(1, (currentProgress - 0.12) * 6));
+      const outFactor = Math.max(0, Math.min(1, (currentProgress - 0.30) * 6));
+      const visFactor = inFactor * (1 - outFactor);
 
-      const posX = isDesktop ? 3.0 : 0;
-      const inX = (1 - factor) * 15 + posX;
-      const finalX = inX - exitFactor * 15;
-      const scale = Math.max(0, (scaleFactor * 0.95) - exitFactor * scaleFactor);
+      const targetX = isDesktop ? 3.0 : 0;
+      const inX = (1 - inFactor) * 20 + targetX;
+      const finalX = inX - outFactor * 20;
 
-      treadmillGroup.scale.set(scale, scale, scale);
+      treadmillGroup.scale.set(scaleFactor * visFactor, scaleFactor * visFactor, scaleFactor * visFactor);
       treadmillGroup.position.x += (finalX - treadmillGroup.position.x) * 0.1;
       treadmillGroup.position.y = isDesktop ? 0 : -1.6;
-      treadmillGroup.rotation.y = -0.5 + factor * 1.5 + mouseX * 0.2;
+      treadmillGroup.rotation.y = -0.5 + inFactor * 1.5 + mouseX * 0.2;
     }
 
-    // 3. BICICLETA ESTÁTICA (SERVICIO 2 - ZIG ZAG: COLUMNA IZQUIERDA EN ESCRITORIO)
+    // ------------------------------------------------------------------------
+    // 3. BICICLETA ESTÁTICA (SERVICIO 2 - BICICLETAS: Progress 0.32 -> 0.58)
+    // ------------------------------------------------------------------------
     if (exerciseBikeGroup) {
-      const factor = Math.max(0, Math.min(1, (currentProgress - 0.25) * 5));
-      const exitFactor = Math.max(0, Math.min(1, (currentProgress - 0.40) * 5));
+      const inFactor = Math.max(0, Math.min(1, (currentProgress - 0.30) * 6));
+      const outFactor = Math.max(0, Math.min(1, (currentProgress - 0.52) * 6));
+      const visFactor = inFactor * (1 - outFactor);
 
-      // En el Zig-Zag, la bicicleta se posiciona a la izquierda (x: -3.0 en desktop)
-      const posX = isDesktop ? -3.0 : 0;
-      const inX = (-1 + factor) * -15 + posX;
-      const finalX = inX + exitFactor * 15;
-      const scale = Math.max(0, (scaleFactor * 0.95) - exitFactor * scaleFactor);
+      // En el Zig-Zag, la bicicleta se ubica en la Columna Izquierda (x: -3.0 en desktop)
+      const targetX = isDesktop ? -3.0 : 0;
+      const inX = (-1 + inFactor) * -20 + targetX;
+      const finalX = inX + outFactor * 20;
 
-      exerciseBikeGroup.scale.set(scale, scale, scale);
+      exerciseBikeGroup.scale.set(scaleFactor * visFactor, scaleFactor * visFactor, scaleFactor * visFactor);
       exerciseBikeGroup.position.x += (finalX - exerciseBikeGroup.position.x) * 0.1;
       exerciseBikeGroup.position.y = isDesktop ? 0 : -1.6;
-      exerciseBikeGroup.rotation.y = 0.5 - factor * 1.5 + mouseX * 0.2;
+      exerciseBikeGroup.rotation.y = 0.5 - inFactor * 1.5 + mouseX * 0.2;
     }
 
     camera.position.x = mouseX * 0.3;

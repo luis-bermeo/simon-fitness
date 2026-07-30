@@ -1,33 +1,69 @@
 /**
- * SIMÓN FITNESS - MAIN APPLICATION LOGIC & INTERSECTION OBSERVER (v3.0)
- * Transiciones suaves de entrada estilo Apple, validación e inicialización.
+ * SIMÓN FITNESS - MAIN APPLICATION LOGIC & GSAP SCROLLTRIGGER ENGINE (v3.2)
+ * Sincronización perfecta del scroll con las 3 escenas 3D (Mancuerna, Cinta, Bicicleta).
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
-  // 1. Inicializar Motor 3D Acotado
+  // 1. Inicializar escena 3D WebGL
   if (window.SimonFitness3D) {
     window.SimonFitness3D.init();
   }
 
-  // 2. Intersection Observer para Animaciones Fade-In-Up suaves estilo Apple
+  // 2. Registrar GSAP y ScrollTrigger
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+    setupScrollytelling();
+    setupMetricsCountUp();
+  } else {
+    setupFallbackScroll();
+  }
+
+  // 3. Intersection Observer para animaciones de entrada Apple
   setupFadeInObserver();
 
-  // 3. Animación de Contadores de Métricas
-  setupMetricsCountUp();
-
-  // 4. Header & Formulario
+  // 4. Header y Formulario
   setupHeaderScroll();
   setupContactForm();
 });
 
 /* ==========================================================================
-   INTERSECTION OBSERVER PARA ANIMACIONES DE ENTRADA (FADE-IN-UP)
+   GSAP SCROLLTRIGGER SCROLLYTELLING LOGIC
    ========================================================================== */
 
+function setupScrollytelling() {
+  // Sincronización global del progreso de scroll con Three.js
+  ScrollTrigger.create({
+    trigger: document.body,
+    start: 'top top',
+    end: 'bottom bottom',
+    onUpdate: (self) => {
+      if (window.SimonFitness3D) {
+        window.SimonFitness3D.setScrollProgress(self.progress);
+      }
+    }
+  });
+
+  // Animaciones sutiles de la tarjetas al entrar
+  gsap.utils.toArray('.service-card-box').forEach((card, index) => {
+    gsap.from(card, {
+      scrollTrigger: {
+        trigger: card,
+        start: 'top 88%',
+        toggleActions: 'play none none reverse'
+      },
+      y: 40,
+      opacity: 0,
+      duration: 0.8,
+      delay: index * 0.15,
+      ease: 'power3.out'
+    });
+  });
+}
+
 function setupFadeInObserver() {
-  const elements = document.querySelectorAll('.fade-in-up, .bounded-3d-card, .why-us-card, .review-card');
+  const elements = document.querySelectorAll('.fade-in-up, .why-us-card, .review-card');
   
   if (!('IntersectionObserver' in window)) {
     elements.forEach(el => el.classList.add('is-visible'));
@@ -42,57 +78,44 @@ function setupFadeInObserver() {
       }
     });
   }, {
-    threshold: 0.15,
+    threshold: 0.12,
     rootMargin: '0px 0px -40px 0px'
   });
 
-  elements.forEach(el => {
-    el.classList.add('fade-in-up');
-    observer.observe(el);
-  });
+  elements.forEach(el => observer.observe(el));
 }
-
-/* ==========================================================================
-   ANIMACIÓN DE CONTADORES DE MÉTRICAS (Count-Up)
-   ========================================================================== */
 
 function setupMetricsCountUp() {
   const metricElements = document.querySelectorAll('.metric-number[data-target]');
   if (!metricElements.length) return;
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        const target = parseInt(el.getAttribute('data-target'), 10);
-        const suffix = el.getAttribute('data-suffix') || '';
+  metricElements.forEach(el => {
+    const target = parseInt(el.getAttribute('data-target'), 10);
+    const suffix = el.getAttribute('data-suffix') || '';
 
-        let current = 0;
-        const duration = 1800; // ms
-        const stepTime = 20;
-        const increment = target / (duration / stepTime);
-
-        const timer = setInterval(() => {
-          current += increment;
-          if (current >= target) {
-            el.textContent = `${target}${suffix}`;
-            clearInterval(timer);
-          } else {
-            el.textContent = `${Math.floor(current)}${suffix}`;
+    ScrollTrigger.create({
+      trigger: el,
+      start: 'top 90%',
+      once: true,
+      onEnter: () => {
+        let countObj = { val: 0 };
+        gsap.to(countObj, {
+          val: target,
+          duration: 2.0,
+          ease: 'power2.out',
+          onUpdate: () => {
+            el.textContent = `${Math.floor(countObj.val)}${suffix}`;
           }
-        }, stepTime);
-
-        observer.unobserve(el);
+        });
       }
     });
-  }, { threshold: 0.2 });
-
-  metricElements.forEach(el => observer.observe(el));
+  });
 }
 
-/* ==========================================================================
-   ESTADO DEL HEADER AL HACER SCROLL
-   ========================================================================== */
+function setupFallbackScroll() {
+  const heroSub = document.querySelector('.hero-subtitle-seo');
+  if (heroSub) heroSub.style.opacity = '1';
+}
 
 function setupHeaderScroll() {
   const header = document.querySelector('.site-header');
@@ -106,10 +129,6 @@ function setupHeaderScroll() {
     }
   }, { passive: true });
 }
-
-/* ==========================================================================
-   FORMULARIO DE CONTACTO CON VALIDACIÓN EN TIEMPO REAL
-   ========================================================================== */
 
 function setupContactForm() {
   const form = document.getElementById('simon-contact-form');

@@ -1,77 +1,54 @@
 /**
- * SIMÓN FITNESS - MAIN APPLICATION LOGIC & GSAP SCROLLTRIGGER ENGINE (v2.1)
- * Coordinación de Scrollytelling 3D, animación de métricas y validación interactiva.
+ * SIMÓN FITNESS - MAIN APPLICATION LOGIC & INTERSECTION OBSERVER (v3.0)
+ * Transiciones suaves de entrada estilo Apple, validación e inicialización.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
-  // 1. Inicializar la escena WebGL 3D
+  // 1. Inicializar Motor 3D Acotado
   if (window.SimonFitness3D) {
     window.SimonFitness3D.init();
   }
 
-  // 2. Registrar GSAP y ScrollTrigger
-  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
-    setupScrollytelling();
-    setupMetricsCountUp();
-  } else {
-    setupFallbackScroll();
-  }
+  // 2. Intersection Observer para Animaciones Fade-In-Up suaves estilo Apple
+  setupFadeInObserver();
 
-  // 3. Header & Formulario
+  // 3. Animación de Contadores de Métricas
+  setupMetricsCountUp();
+
+  // 4. Header & Formulario
   setupHeaderScroll();
   setupContactForm();
 });
 
 /* ==========================================================================
-   GSAP SCROLLTRIGGER SCROLLYTELLING LOGIC
+   INTERSECTION OBSERVER PARA ANIMACIONES DE ENTRADA (FADE-IN-UP)
    ========================================================================== */
 
-function setupScrollytelling() {
-  // Enlace del scroll global con la escena 3D en Three.js
-  ScrollTrigger.create({
-    trigger: document.body,
-    start: 'top top',
-    end: 'bottom bottom',
-    onUpdate: (self) => {
-      if (window.SimonFitness3D) {
-        window.SimonFitness3D.setScrollProgress(self.progress);
+function setupFadeInObserver() {
+  const elements = document.querySelectorAll('.fade-in-up, .bounded-3d-card, .why-us-card, .review-card');
+  
+  if (!('IntersectionObserver' in window)) {
+    elements.forEach(el => el.classList.add('is-visible'));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
       }
-    }
+    });
+  }, {
+    threshold: 0.15,
+    rootMargin: '0px 0px -40px 0px'
   });
 
-  // Animaciones de revelado de tarjetas de servicio
-  gsap.utils.toArray('.service-card-apple').forEach((card, index) => {
-    gsap.from(card, {
-      scrollTrigger: {
-        trigger: card,
-        start: 'top 88%',
-        toggleActions: 'play none none reverse'
-      },
-      y: 40,
-      opacity: 0,
-      duration: 0.7,
-      delay: index * 0.12,
-      ease: 'power3.out'
-    });
-  });
-
-  // Animaciones de la sección "¿Por Qué Elegirnos?"
-  gsap.utils.toArray('.why-us-card').forEach((card, index) => {
-    gsap.from(card, {
-      scrollTrigger: {
-        trigger: card,
-        start: 'top 90%',
-        toggleActions: 'play none none reverse'
-      },
-      scale: 0.95,
-      opacity: 0,
-      duration: 0.5,
-      delay: (index % 3) * 0.08,
-      ease: 'back.out(1.3)'
-    });
+  elements.forEach(el => {
+    el.classList.add('fade-in-up');
+    observer.observe(el);
   });
 }
 
@@ -81,33 +58,36 @@ function setupScrollytelling() {
 
 function setupMetricsCountUp() {
   const metricElements = document.querySelectorAll('.metric-number[data-target]');
-  
-  metricElements.forEach(el => {
-    const target = parseInt(el.getAttribute('data-target'), 10);
-    const suffix = el.getAttribute('data-suffix') || '';
+  if (!metricElements.length) return;
 
-    ScrollTrigger.create({
-      trigger: el,
-      start: 'top 90%',
-      once: true,
-      onEnter: () => {
-        let countObj = { val: 0 };
-        gsap.to(countObj, {
-          val: target,
-          duration: 2.0,
-          ease: 'power2.out',
-          onUpdate: () => {
-            el.textContent = `${Math.floor(countObj.val)}${suffix}`;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.getAttribute('data-target'), 10);
+        const suffix = el.getAttribute('data-suffix') || '';
+
+        let current = 0;
+        const duration = 1800; // ms
+        const stepTime = 20;
+        const increment = target / (duration / stepTime);
+
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            el.textContent = `${target}${suffix}`;
+            clearInterval(timer);
+          } else {
+            el.textContent = `${Math.floor(current)}${suffix}`;
           }
-        });
+        }, stepTime);
+
+        observer.unobserve(el);
       }
     });
-  });
-}
+  }, { threshold: 0.2 });
 
-function setupFallbackScroll() {
-  const heroSub = document.querySelector('.hero-subtitle-seo');
-  if (heroSub) heroSub.style.opacity = '1';
+  metricElements.forEach(el => observer.observe(el));
 }
 
 /* ==========================================================================

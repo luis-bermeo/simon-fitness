@@ -57,18 +57,20 @@
       "latitude": 37.9922,
       "longitude": -1.1307
     },
-    "openingHoursSpecification": {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday"
-      ],
-      "opens": "09:00",
-      "closes": "15:00"
-    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "09:00",
+        "closes": "15:00"
+      }
+    ],
     "areaServed": [
       {
         "@type": "AdministrativeArea",
@@ -95,44 +97,11 @@
         "areaServed": ["Murcia", "Alicante"],
         "availableLanguage": "Spanish"
       }
-    ],
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Servicios de Reparación y Mantenimiento Fitness",
-      "itemListElement": [
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Reparación de Cintas de Correr en Murcia",
-            "description": "Reparación de motores, cambio de tapices, placas electrónicas y calibración de cintas de correr profesionales y domésticas."
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Reparación de Elípticas y Bicicletas en Alicante",
-            "description": "Ajuste de sistemas magnéticos, rodamientos, correas de transmisión y consolas digitales para elípticas y bicicletas estáticas."
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Mantenimiento Preventivo de Gimnasios",
-            "description": "Planes periódicos de revisión, lubricación y optimización para salas de musculación y centros de entrenamiento."
-          }
-        }
-      ]
-    }
+    ]
   }
   </script>
 </head>
 <body>
-
-  <!-- Lienzo WebGL 3D Fijo de Fondo Transparente (Three.js) -->
-  <canvas id="webgl-canvas"></canvas>
 
   <!-- Navbar / Header de Estilo Apple Limpio -->
   <header class="site-header">
@@ -163,24 +132,21 @@
     </div>
   </header>
 
-  <!-- Contenedor Principal de Scrollytelling -->
+  <!-- Contenedor Principal de Scrollytelling & Layout Zig-Zag -->
   <main class="scrollytelling-container">
 
-    <!-- SECCIÓN 1: HERO (2 COLUMNAS EN ESCRITORIO / REORDENADO EN MÓVIL) -->
-    <section class="hero-section" id="inicio">
+    <!-- SECCIÓN 1: HERO (ZIG-ZAG LAYOUT: TEXTO IZQUIERDA | MARCO 3D DERECHA) -->
+    <section class="hero-section content-section" id="inicio">
       <div class="grid-2-columns">
-        <!-- COLUMNA 1: TITULAR, SUBTÍTULO, ESPACIO 3D MÓVIL, BOTONES & MÉTRICAS -->
-        <div class="hero-text-col">
+        <!-- COLUMNA IZQUIERDA: TEXTO & METRICAS -->
+        <div class="hero-text-col fade-in-up">
           <h1 class="hero-title">
             SIMON <span class="accent-red">FITNESS</span>
           </h1>
 
           <p class="hero-subtitle-seo">
-            Servicio Técnico Oficial en Murcia y Alicante. Especializados en la reparación de cintas de correr, elípticas, bicicletas estáticas y mantenimiento preventivo de gimnasios. Más de 15 años de experiencia comprobada.
+            Servicio Técnico Oficial en Murcia y Alicante. Especializados en la reparación de cintas de correr, elípticas, bicicletas estáticas y mantenimiento preventivo de gimnasios. Más de 15 años de experiencia técnica comprobada.
           </p>
-
-          <!-- Espaciador reservado para la escena 3D en móvil (Order 3 en CSS) -->
-          <div class="hero-3d-spacer"></div>
 
           <div class="hero-cta-group">
             <a href="#contacto" class="btn-cta-apple">
@@ -222,70 +188,21 @@
           </div>
         </div>
 
-        <!-- COLUMNA 2: ESPACIO DEDICADO AL MODELO 3D EN ESCRITORIO -->
-        <div class="desktop-3d-placeholder"></div>
-      </div>
-    </section>
-
-    <!-- SECCIÓN 2: SERVICIOS DESTACADOS -->
-    <section class="content-section" id="servicios">
-      <div class="section-container">
-        <div class="section-header">
-          <div class="section-tagline">Ingeniería & Diagnóstico</div>
-          <h2 class="section-title">Servicios Técnicos Especializados</h2>
-          <p class="section-desc">Soluciones integrales de reparación para equipamiento doméstico y profesional de gimnasios.</p>
-        </div>
-
-        <div class="services-grid">
-          <!-- Servicio 1: Cintas de Correr -->
-          <article class="service-card-apple">
-            <div class="service-icon-wrapper">
-              <i class="fa-solid fa-person-running"></i>
+        <!-- COLUMNA DERECHA: MARCO ACOTADO CON CANAL 3D MANCUERNA -->
+        <div class="bounded-3d-card fade-in-up">
+          <canvas class="card-3d-canvas" id="hero-3d-canvas"></canvas>
+          <div class="mobile-card-fallback">
+            <div class="fallback-icon-bubble">
+              <i class="fa-solid fa-dumbbell"></i>
             </div>
-            <span class="service-card-location">Cobertura en Murcia</span>
-            <h3 class="service-card-title">Reparación de Cintas de Correr</h3>
-            <p class="service-card-desc">Sustitución de tapices, placas electrónicas de control de potencia, motores de elevación e inclinación y calibración de velocidad.</p>
-            <ul class="service-features-list">
-              <li><i class="fa-solid fa-check"></i> Reparación de motores AC / DC</li>
-              <li><i class="fa-solid fa-check"></i> Cambio de tabla y banda deslizante</li>
-              <li><i class="fa-solid fa-check"></i> Diagnóstico de errores E01, E02, E05</li>
-            </ul>
-          </article>
-
-          <!-- Servicio 2: Elípticas y Bicicletas -->
-          <article class="service-card-apple">
-            <div class="service-icon-wrapper">
-              <i class="fa-solid fa-bicycle"></i>
-            </div>
-            <span class="service-card-location">Cobertura en Alicante</span>
-            <h3 class="service-card-title">Elípticas y Bicicletas Estáticas</h3>
-            <p class="service-card-desc">Reparación de sistemas de freno electromagnético, sustitución de rodamientos de inercia, correas de transmisión Poli-V y consolas.</p>
-            <ul class="service-features-list">
-              <li><i class="fa-solid fa-check"></i> Ajuste de servomotores magnéticos</li>
-              <li><i class="fa-solid fa-check"></i> Reparación de bielas y pedales</li>
-              <li><i class="fa-solid fa-check"></i> Calibración de resistencia digital</li>
-            </ul>
-          </article>
-
-          <!-- Servicio 3: Mantenimiento Preventivo -->
-          <article class="service-card-apple">
-            <div class="service-icon-wrapper">
-              <i class="fa-solid fa-gears"></i>
-            </div>
-            <span class="service-card-location">Murcia y Alicante</span>
-            <h3 class="service-card-title">Mantenimiento de Gimnasios</h3>
-            <p class="service-card-desc">Planes de inspección periódica para centros deportivos, hoteles y comunidades de vecinos. Maximiza la vida útil de tus máquinas.</p>
-            <ul class="service-features-list">
-              <li><i class="fa-solid fa-check"></i> Lubricación técnica de alta viscosidad</li>
-              <li><i class="fa-solid fa-check"></i> Tensado de cables de tracción</li>
-              <li><i class="fa-solid fa-check"></i> Informes de estado técnico por escrito</li>
-            </ul>
-          </article>
+            <div class="fallback-badge-title">Ingeniería & Precisión Técnica</div>
+            <p style="font-size: var(--text-xs); color: var(--color-text-subtle);">Reparaciones garantizadas de maquinaria de fitness en Murcia y Alicante.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- SECCIÓN 3: MARCAS SLIDER (Infinite Marquee) -->
+    <!-- MARCAS SLIDER -->
     <section class="brands-section" id="marcas">
       <div class="ticker-track">
         <div class="brand-item">BH FITNESS</div>
@@ -304,23 +221,100 @@
       </div>
     </section>
 
-    <!-- SECCIÓN 4: POR QUÉ ELEGIRNOS -->
+    <!-- SECCIÓN 2: SERVICIO 1 - CINTAS DE CORRER (IZQUIERDA: TEXTO | DERECHA: MARCO 3D CINTA) -->
+    <section class="content-section" id="servicios">
+      <div class="section-container">
+        <div class="section-header fade-in-up">
+          <div class="section-tagline">Ingeniería & Diagnóstico</div>
+          <h2 class="section-title">Servicios Técnicos Especializados</h2>
+          <p class="section-desc">Soluciones integrales de reparación para equipamiento doméstico y profesional de gimnasios.</p>
+        </div>
+
+        <!-- FILA ZIG-ZAG 1 -->
+        <div class="grid-2-columns" style="margin-bottom: var(--space-2xl);">
+          <div class="service-text-box fade-in-up">
+            <span class="service-location-tag">Cobertura en Murcia</span>
+            <h3 class="service-title">Reparación de Cintas de Correr</h3>
+            <p class="service-desc-text">
+              Sustitución de tapices, placas electrónicas de control de potencia, motores de elevación e inclinación y calibración técnica de velocidad.
+            </p>
+            <ul class="service-features-list">
+              <li><i class="fa-solid fa-check"></i> Reparación de motores AC / DC</li>
+              <li><i class="fa-solid fa-check"></i> Cambio de tabla y banda deslizante</li>
+              <li><i class="fa-solid fa-check"></i> Diagnóstico de errores E01, E02, E05</li>
+            </ul>
+            <div style="margin-top: var(--space-sm);">
+              <a href="#contacto" class="btn-cta-apple">
+                <span>Solicitar Reparación de Cinta</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="bounded-3d-card fade-in-up">
+            <canvas class="card-3d-canvas" id="service1-3d-canvas"></canvas>
+            <div class="mobile-card-fallback">
+              <div class="fallback-icon-bubble">
+                <i class="fa-solid fa-person-running"></i>
+              </div>
+              <div class="fallback-badge-title">Especialistas en Cintas de Correr</div>
+              <p style="font-size: var(--text-xs); color: var(--color-text-subtle);">Sustitución de placas electrónicas, motores y calibración de bandas.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- FILA ZIG-ZAG 2 (INVERTIDA: MARCO 3D BICICLETA IZQUIERDA | TEXTO DERECHA) -->
+        <div class="grid-2-columns grid-reverse">
+          <div class="bounded-3d-card fade-in-up">
+            <canvas class="card-3d-canvas" id="service2-3d-canvas"></canvas>
+            <div class="mobile-card-fallback">
+              <div class="fallback-icon-bubble">
+                <i class="fa-solid fa-bicycle"></i>
+              </div>
+              <div class="fallback-badge-title">Elípticas y Bicicletas Estáticas</div>
+              <p style="font-size: var(--text-xs); color: var(--color-text-subtle);">Reparación de frenos magnéticos, rodamientos y consolas digitales.</p>
+            </div>
+          </div>
+
+          <div class="service-text-box fade-in-up">
+            <span class="service-location-tag">Cobertura en Alicante</span>
+            <h3 class="service-title">Elípticas y Bicicletas Estáticas</h3>
+            <p class="service-desc-text">
+              Ajuste y reparación de sistemas de freno electromagnético, sustitución de rodamientos de inercia, correas de transmisión Poli-V y mantenimiento preventivo.
+            </p>
+            <ul class="service-features-list">
+              <li><i class="fa-solid fa-check"></i> Ajuste de servomotores magnéticos</li>
+              <li><i class="fa-solid fa-check"></i> Reparación de bielas y pedales</li>
+              <li><i class="fa-solid fa-check"></i> Calibración de resistencia digital</li>
+            </ul>
+            <div style="margin-top: var(--space-sm);">
+              <a href="#contacto" class="btn-cta-apple btn-cta-secondary">
+                <span>Solicitar Reparación de Bicicleta</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: POR QUÉ ELEGIRNOS -->
     <section class="content-section" id="nosotros">
       <div class="section-container">
         
-        <div class="why-us-quote-box">
+        <div class="why-us-quote-box fade-in-up">
           <p class="why-us-quote-text">
             "No somos un gimnasio. Somos el equipo técnico de confianza al que los mejores centros deportivos llaman cuando necesitan precisión y rapidez."
           </p>
         </div>
 
-        <div class="section-header">
+        <div class="section-header fade-in-up">
           <div class="section-tagline">Ventaja Competitiva</div>
           <h2 class="section-title">¿Por Qué Elegir Simón Fitness?</h2>
         </div>
 
         <div class="why-us-grid">
-          <div class="why-us-card">
+          <div class="why-us-card fade-in-up">
             <div class="why-icon"><i class="fa-solid fa-stopwatch" style="color: var(--color-primary-red);"></i></div>
             <div>
               <h3 class="why-title">Respuesta en 24 Horas</h3>
@@ -328,7 +322,7 @@
             </div>
           </div>
 
-          <div class="why-us-card">
+          <div class="why-us-card fade-in-up">
             <div class="why-icon"><i class="fa-solid fa-graduation-cap" style="color: var(--color-primary-red);"></i></div>
             <div>
               <h3 class="why-title">Técnicos Certificados</h3>
@@ -336,7 +330,7 @@
             </div>
           </div>
 
-          <div class="why-us-card">
+          <div class="why-us-card fade-in-up">
             <div class="why-icon"><i class="fa-solid fa-shield-halved" style="color: var(--color-primary-red);"></i></div>
             <div>
               <h3 class="why-title">Garantía por Escrito</h3>
@@ -344,7 +338,7 @@
             </div>
           </div>
 
-          <div class="why-us-card">
+          <div class="why-us-card fade-in-up">
             <div class="why-icon"><i class="fa-solid fa-location-dot" style="color: var(--color-primary-red);"></i></div>
             <div>
               <h3 class="why-title">Cobertura Regional</h3>
@@ -352,7 +346,7 @@
             </div>
           </div>
 
-          <div class="why-us-card">
+          <div class="why-us-card fade-in-up">
             <div class="why-icon"><i class="fa-solid fa-calculator" style="color: var(--color-primary-red);"></i></div>
             <div>
               <h3 class="why-title">Presupuesto Sin Compromiso</h3>
@@ -360,7 +354,7 @@
             </div>
           </div>
 
-          <div class="why-us-card">
+          <div class="why-us-card fade-in-up">
             <div class="why-icon"><i class="fa-solid fa-handshake" style="color: var(--color-primary-red);"></i></div>
             <div>
               <h3 class="why-title">Atención Personalizada</h3>
@@ -371,17 +365,17 @@
       </div>
     </section>
 
-    <!-- SECCIÓN 5: RESEÑAS Y OPINIONES -->
+    <!-- SECCIÓN 4: RESEÑAS Y OPINIONES -->
     <section class="content-section" id="opiniones">
       <div class="section-container">
-        <div class="section-header">
+        <div class="section-header fade-in-up">
           <div class="section-tagline">Testimonios Reales</div>
           <h2 class="section-title">Lo Que Dicen Nuestros Clientes</h2>
           <p class="section-desc">Gimnasios profesionales, boxes de CrossFit y particulares avalan nuestro servicio técnico.</p>
         </div>
 
         <div class="reviews-grid">
-          <article class="review-card">
+          <article class="review-card fade-in-up">
             <div>
               <div class="stars-row">
                 <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
@@ -397,7 +391,7 @@
             </div>
           </article>
 
-          <article class="review-card">
+          <article class="review-card fade-in-up">
             <div>
               <div class="stars-row">
                 <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
@@ -413,7 +407,7 @@
             </div>
           </article>
 
-          <article class="review-card">
+          <article class="review-card fade-in-up">
             <div>
               <div class="stars-row">
                 <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
@@ -432,21 +426,21 @@
       </div>
     </section>
 
-    <!-- SECCIÓN 6: FORMULARIO DE CONTACTO Y FOOTER -->
+    <!-- SECCIÓN 5: FORMULARIO DE CONTACTO Y DATOS OFICIALES -->
     <section class="content-section" id="contacto">
       <div class="section-container">
-        <div class="section-header">
+        <div class="section-header fade-in-up">
           <div class="section-tagline">Asistencia Inmediata</div>
           <h2 class="section-title">Solicita Asistencia Técnica</h2>
           <p class="section-desc">Rellena el formulario y nuestro equipo contactará contigo en menos de 24 horas.</p>
         </div>
 
         <div class="contact-layout">
-          <!-- Métodos directos de contacto -->
-          <div class="contact-info-box">
-            <a href="tel:650553360" class="contact-method-card">
+          <!-- Métodos directos de contacto oficiales -->
+          <div class="contact-info-box fade-in-up">
+            <a href="https://wa.me/34650553360" target="_blank" rel="noopener" class="contact-method-card">
               <div class="contact-icon-bubble">
-                <i class="fa-solid fa-mobile-screen-button"></i>
+                <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i>
               </div>
               <div>
                 <div class="contact-label">Teléfono Móvil / WhatsApp Directo</div>
@@ -481,12 +475,13 @@
               <div>
                 <div class="contact-label">Horario de Atención</div>
                 <div class="contact-val">Lunes a Viernes: 9:00 - 15:00</div>
+                <div style="font-size: 0.75rem; color: var(--color-text-subtle);">Sábados y Domingos: Cerrado</div>
               </div>
             </div>
           </div>
 
           <!-- Formulario Futurista con Validación -->
-          <div class="contact-form-glass">
+          <div class="contact-form-glass fade-in-up">
             <form id="simon-contact-form">
               <div class="form-group">
                 <label class="form-label" for="nombre">Nombre Completo *</label>
@@ -544,7 +539,7 @@
     <span class="whatsapp-pulse-dot"></span>
   </a>
 
-  <!-- Footer con Isotipo SF Limpio -->
+  <!-- Footer con Isotipo SF Limpio sin Redes Sociales -->
   <footer class="site-footer">
     <div class="footer-container">
       <div class="footer-top">
@@ -559,7 +554,7 @@
 
         <div>
           <h4 style="font-size: var(--text-sm); margin-bottom: 12px;">Teléfonos Directos</h4>
-          <p style="font-size: var(--text-xs); color: var(--color-text-subtle);">Móvil/WhatsApp: <a href="tel:650553360" style="color: #ffffff;">650 55 33 60</a></p>
+          <p style="font-size: var(--text-xs); color: var(--color-text-subtle);">Móvil/WhatsApp: <a href="https://wa.me/34650553360" target="_blank" rel="noopener" style="color: #ffffff;">650 55 33 60</a></p>
           <p style="font-size: var(--text-xs); color: var(--color-text-subtle);">Fijo: <a href="tel:968203200" style="color: #ffffff;">968 20 32 00</a></p>
         </div>
 
@@ -567,6 +562,7 @@
           <h4 style="font-size: var(--text-sm); margin-bottom: 12px;">Ubicación & Cobertura</h4>
           <p style="font-size: var(--text-xs); color: var(--color-text-subtle);">Murcia & Alicante (Comunidad Valenciana)</p>
           <p style="font-size: var(--text-xs); color: var(--color-text-subtle);">Email: gestion@simonfitness.com</p>
+          <p style="font-size: var(--text-xs); color: var(--color-text-subtle); margin-top: 4px;">Horario: L-V 9:00 - 15:00</p>
         </div>
       </div>
 
@@ -577,10 +573,8 @@
     </div>
   </footer>
 
-  <!-- Scripts: GSAP + ScrollTrigger + Three.js + App Logic -->
+  <!-- Scripts: Three.js + App Logic -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   
   <script src="js/three-scene.js"></script>
   <script src="js/script.js"></script>

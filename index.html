@@ -103,6 +103,9 @@
 </head>
 <body>
 
+  <!-- Lienzo WebGL 3D Fijo de Fondo Transparente para Objetos Grandes Sueltos -->
+  <canvas id="webgl-canvas"></canvas>
+
   <!-- Navbar / Header de Estilo Apple Limpio -->
   <header class="site-header">
     <div class="header-container">
@@ -135,17 +138,16 @@
   <!-- Contenedor Principal de Scrollytelling & Layout Zig-Zag -->
   <main class="scrollytelling-container">
 
-    <!-- SECCIÓN 1: HERO (ZIG-ZAG LAYOUT: TEXTO IZQUIERDA | MARCO 3D DERECHA) -->
+    <!-- SECCIÓN 1: HERO (TEXTO IZQUIERDA | MODELO 3D SUELTO MANCUERNA DERECHA) -->
     <section class="hero-section content-section" id="inicio">
       <div class="grid-2-columns">
-        <!-- COLUMNA IZQUIERDA: TEXTO & METRICAS -->
         <div class="hero-text-col fade-in-up">
           <h1 class="hero-title">
             SIMON <span class="accent-red">FITNESS</span>
           </h1>
 
           <p class="hero-subtitle-seo">
-            Servicio Técnico Oficial en Murcia y Alicante. Especializados en la reparación de cintas de correr, elípticas, bicicletas estáticas y mantenimiento preventivo de gimnasios. Más de 15 años de experiencia técnica comprobada.
+            Servicio Técnico Oficial en Murcia y Alicante. Especializados en la reparación de cintas de correr, elípticas, bicicletas estáticas y mantenimiento preventivo de gimnasios. Más de 15 años de experiencia comprobada.
           </p>
 
           <div class="hero-cta-group">
@@ -188,17 +190,8 @@
           </div>
         </div>
 
-        <!-- COLUMNA DERECHA: MARCO ACOTADO CON CANAL 3D MANCUERNA -->
-        <div class="bounded-3d-card fade-in-up">
-          <canvas class="card-3d-canvas" id="hero-3d-canvas"></canvas>
-          <div class="mobile-card-fallback">
-            <div class="fallback-icon-bubble">
-              <i class="fa-solid fa-dumbbell"></i>
-            </div>
-            <div class="fallback-badge-title">Ingeniería & Precisión Técnica</div>
-            <p style="font-size: var(--text-xs); color: var(--color-text-subtle);">Reparaciones garantizadas de maquinaria de fitness en Murcia y Alicante.</p>
-          </div>
-        </div>
+        <!-- ESPACIO 3D SUELTO MANCUERNA GRANDE -->
+        <div class="viewport-3d-space"></div>
       </div>
     </section>
 
@@ -221,7 +214,7 @@
       </div>
     </section>
 
-    <!-- SECCIÓN 2: SERVICIO 1 - CINTAS DE CORRER (IZQUIERDA: TEXTO | DERECHA: MARCO 3D CINTA) -->
+    <!-- SECCIÓN 2: SERVICIOS ZIG-ZAG -->
     <section class="content-section" id="servicios">
       <div class="section-container">
         <div class="section-header fade-in-up">
@@ -230,9 +223,9 @@
           <p class="section-desc">Soluciones integrales de reparación para equipamiento doméstico y profesional de gimnasios.</p>
         </div>
 
-        <!-- FILA ZIG-ZAG 1 -->
+        <!-- ZIG-ZAG 1: CINTAS DE CORRER (TEXTO IZQUIERDA | MODELO 3D CINTA DERECHA) -->
         <div class="grid-2-columns" style="margin-bottom: var(--space-2xl);">
-          <div class="service-text-box fade-in-up">
+          <div class="service-card-box fade-in-up">
             <span class="service-location-tag">Cobertura en Murcia</span>
             <h3 class="service-title">Reparación de Cintas de Correr</h3>
             <p class="service-desc-text">
@@ -251,32 +244,16 @@
             </div>
           </div>
 
-          <div class="bounded-3d-card fade-in-up">
-            <canvas class="card-3d-canvas" id="service1-3d-canvas"></canvas>
-            <div class="mobile-card-fallback">
-              <div class="fallback-icon-bubble">
-                <i class="fa-solid fa-person-running"></i>
-              </div>
-              <div class="fallback-badge-title">Especialistas en Cintas de Correr</div>
-              <p style="font-size: var(--text-xs); color: var(--color-text-subtle);">Sustitución de placas electrónicas, motores y calibración de bandas.</p>
-            </div>
-          </div>
+          <!-- ESPACIO 3D SUELTO CINTA GRANDE -->
+          <div class="viewport-3d-space"></div>
         </div>
 
-        <!-- FILA ZIG-ZAG 2 (INVERTIDA: MARCO 3D BICICLETA IZQUIERDA | TEXTO DERECHA) -->
+        <!-- ZIG-ZAG 2: BICICLETAS ESTÁTICAS (MODELO 3D BICI IZQUIERDA | TEXTO DERECHA) -->
         <div class="grid-2-columns grid-reverse">
-          <div class="bounded-3d-card fade-in-up">
-            <canvas class="card-3d-canvas" id="service2-3d-canvas"></canvas>
-            <div class="mobile-card-fallback">
-              <div class="fallback-icon-bubble">
-                <i class="fa-solid fa-bicycle"></i>
-              </div>
-              <div class="fallback-badge-title">Elípticas y Bicicletas Estáticas</div>
-              <p style="font-size: var(--text-xs); color: var(--color-text-subtle);">Reparación de frenos magnéticos, rodamientos y consolas digitales.</p>
-            </div>
-          </div>
+          <!-- ESPACIO 3D SUELTO BICICLETA GRANDE -->
+          <div class="viewport-3d-space"></div>
 
-          <div class="service-text-box fade-in-up">
+          <div class="service-card-box fade-in-up">
             <span class="service-location-tag">Cobertura en Alicante</span>
             <h3 class="service-title">Elípticas y Bicicletas Estáticas</h3>
             <p class="service-desc-text">
@@ -539,7 +516,7 @@
     <span class="whatsapp-pulse-dot"></span>
   </a>
 
-  <!-- Footer con Isotipo SF Limpio sin Redes Sociales -->
+  <!-- Footer con Isotipo SF Limpio -->
   <footer class="site-footer">
     <div class="footer-container">
       <div class="footer-top">
@@ -573,8 +550,10 @@
     </div>
   </footer>
 
-  <!-- Scripts: Three.js + App Logic -->
+  <!-- Scripts: Three.js + GSAP + App Logic -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   
   <script src="js/three-scene.js"></script>
   <script src="js/script.js"></script>

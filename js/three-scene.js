@@ -1,7 +1,7 @@
 /**
- * SIMÓN FITNESS - THREE.JS 3D ENGINE (v5.0 Cinematic Particle Field & Free 3D Objects)
- * Partículas flotantes sutiles en movimiento lento (Rojo + Blanco) en fondo carbono (#0A0A0B).
- * Renderizado de objetos 3D sueltos sin cajas, ocultos en móviles (< 992px) para máxima velocidad.
+ * SIMÓN FITNESS - THREE.JS 3D ENGINE (v5.1 High-Density Particle Starfield)
+ * Campo de partículas rojas y blancas de alto impacto: más densas (240 por escena),
+ * más grandes (size 0.09), luminosas (opacity 0.75) y con movimiento orgánico flotante.
  */
 
 window.SimonFitness3D = (function () {
@@ -33,22 +33,32 @@ window.SimonFitness3D = (function () {
     animate();
   }
 
-  // Helper: Añadir campo de partículas sutiles flotantes (rojas y blancas)
+  // Helper: Añadir campo de partículas intensas, visibles y flotantes (Rojo Eléctrico + Blanco Puro)
   function addParticleField(scene) {
-    const particleCount = 60;
+    const particleCount = 240; // Cuadruplicamos la cantidad para alta densidad visual
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
     const redColor = new THREE.Color(0xE30613);
-    const whiteColor = new THREE.Color(0xffffff);
+    const brightRed = new THREE.Color(0xFF2E3B);
+    const whiteColor = new THREE.Color(0xFFFFFF);
 
     for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 12;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+      positions[i * 3] = (Math.random() - 0.5) * 16;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 16;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 12;
 
-      const mixColor = Math.random() > 0.4 ? redColor : whiteColor;
+      const rand = Math.random();
+      let mixColor;
+      if (rand > 0.6) {
+        mixColor = redColor;
+      } else if (rand > 0.3) {
+        mixColor = brightRed;
+      } else {
+        mixColor = whiteColor;
+      }
+
       colors[i * 3] = mixColor.r;
       colors[i * 3 + 1] = mixColor.g;
       colors[i * 3 + 2] = mixColor.b;
@@ -58,10 +68,10 @@ window.SimonFitness3D = (function () {
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
     const material = new THREE.PointsMaterial({
-      size: 0.04,
+      size: 0.09, // Más de 2x tamaño anterior para máxima visibilidad
       vertexColors: true,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.75, // Alta opacidad y brillo
       blending: THREE.AdditiveBlending
     });
 
@@ -146,7 +156,8 @@ window.SimonFitness3D = (function () {
       update: () => {
         dumbbellGroup.rotation.y += 0.009;
         dumbbellGroup.rotation.x = Math.sin(Date.now() * 0.001) * 0.12;
-        particles.rotation.y += 0.001;
+        particles.rotation.y += 0.002;
+        particles.rotation.x = Math.sin(Date.now() * 0.0005) * 0.05;
       }
     });
   }
@@ -226,7 +237,8 @@ window.SimonFitness3D = (function () {
       particles: particles,
       update: () => {
         treadmillGroup.rotation.y = Math.sin(Date.now() * 0.0008) * 0.35 - 0.2;
-        particles.rotation.y += 0.001;
+        particles.rotation.y += 0.002;
+        particles.rotation.x = Math.sin(Date.now() * 0.0005) * 0.05;
       }
     });
   }
@@ -305,7 +317,8 @@ window.SimonFitness3D = (function () {
       particles: particles,
       update: () => {
         bikeGroup.rotation.y = Math.sin(Date.now() * 0.0008) * 0.35 + 0.2;
-        particles.rotation.y += 0.001;
+        particles.rotation.y += 0.002;
+        particles.rotation.x = Math.sin(Date.now() * 0.0005) * 0.05;
       }
     });
   }

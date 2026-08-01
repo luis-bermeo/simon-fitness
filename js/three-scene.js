@@ -1,7 +1,7 @@
 /**
- * SIMÓN FITNESS - THREE.JS 3D ENGINE (v5.2 Full-Page Background Starfield)
- * 1. Lienzo de partículas fijas de fondo (#stars-background-canvas) que cubre TODA la página web.
- * 2. Tres escenas 3D de modelos (Mancuerna, Cinta, Bicicleta) en sus respectivos slots.
+ * SIMÓN FITNESS - THREE.JS 3D ENGINE (v5.3 Micro-Stardust Particle Field)
+ * Polvo estelar ultra-sutil: micro-puntos circulares suaves (1px - 2px),
+ * textura radial limpia, opacidad reducida (0.15 - 0.35) y movimiento cósmico elegánte.
  */
 
 window.SimonFitness3D = (function () {
@@ -10,7 +10,7 @@ window.SimonFitness3D = (function () {
   const scenes = [];
   let isMobile = false;
 
-  // Escena y partículas del FONDO COMPLETO DE LA PÁGINA
+  // Escena y partículas del FONDO GLOBAL STARDUST
   let bgScene, bgCamera, bgRenderer, bgParticles;
 
   function checkMobile() {
@@ -23,7 +23,7 @@ window.SimonFitness3D = (function () {
 
     if (typeof THREE === 'undefined') return;
 
-    // 1. Inicializar el Fondo Global de Partículas para TODA la web
+    // 1. Inicializar el Fondo Global de Polvo Estelar (Micro-partículas circulares)
     setupFullPageParticleBg();
 
     // 2. Inicializar los Modelos 3D en sus slots (en escritorio)
@@ -36,8 +36,29 @@ window.SimonFitness3D = (function () {
     animate();
   }
 
+  // Generador de textura circular suave (evita cuadrados pixelados)
+  function createCircleTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+
+    const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    gradient.addColorStop(0.35, 'rgba(255, 255, 255, 0.7)');
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(32, 32, 32, 0, Math.PI * 2);
+    ctx.fill();
+
+    const texture = new THREE.CanvasTexture(canvas);
+    return texture;
+  }
+
   // ==========================================================================
-  // FONDO GLOBAL DE PARTÍCULAS PARA TODA LA PÁGINA (#stars-background-canvas)
+  // FONDO GLOBAL DE POLVO ESTELAR DE ALTA PRECISIÓN (#stars-background-canvas)
   // ==========================================================================
   function setupFullPageParticleBg() {
     const canvas = document.getElementById('stars-background-canvas');
@@ -51,14 +72,14 @@ window.SimonFitness3D = (function () {
     bgRenderer.setSize(window.innerWidth, window.innerHeight);
     bgRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    const particleCount = isMobile ? 180 : 380; // Alta densidad en toda la pantalla
+    const particleCount = isMobile ? 220 : 480; // Alta densidad de micro-puntos
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
-    const redColor = new THREE.Color(0xE30613);
-    const brightRed = new THREE.Color(0xFF2E3B);
-    const whiteColor = new THREE.Color(0xFFFFFF);
+    const neutralWhite = new THREE.Color(0xF8FAFC);
+    const softWhite = new THREE.Color(0xE2E8F0);
+    const brandRed = new THREE.Color(0xE30613);
 
     for (let i = 0; i < particleCount; i++) {
       positions[i * 3] = (Math.random() - 0.5) * 1200;
@@ -67,12 +88,12 @@ window.SimonFitness3D = (function () {
 
       const rand = Math.random();
       let mixColor;
-      if (rand > 0.6) {
-        mixColor = redColor;
-      } else if (rand > 0.3) {
-        mixColor = brightRed;
+      if (rand > 0.85) {
+        mixColor = brandRed; // 15% de acento sutil en rojo corporativo
+      } else if (rand > 0.4) {
+        mixColor = neutralWhite; // Blanco neutro puro
       } else {
-        mixColor = whiteColor;
+        mixColor = softWhite; // Blanco tenue
       }
 
       colors[i * 3] = mixColor.r;
@@ -83,11 +104,16 @@ window.SimonFitness3D = (function () {
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
+    const particleTexture = createCircleTexture();
+
     const material = new THREE.PointsMaterial({
-      size: isMobile ? 3.5 : 4.5,
+      size: isMobile ? 1.4 : 1.8, // Micro-puntos circulares finos de 1px - 2px
+      map: particleTexture,
       vertexColors: true,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.32, // Opacidad ultrasutil de polvo estelar
+      alphaTest: 0.01,
+      depthWrite: false,
       blending: THREE.AdditiveBlending
     });
 
@@ -352,10 +378,10 @@ window.SimonFitness3D = (function () {
   function animate() {
     requestAnimationFrame(animate);
 
-    // Animación de partículas del FONDO COMPLETO
+    // Animación del POLVO ESTELAR ULTRA-SUAVE
     if (bgParticles && bgRenderer) {
-      bgParticles.rotation.y += 0.0008;
-      bgParticles.rotation.x = Math.sin(Date.now() * 0.0003) * 0.04;
+      bgParticles.rotation.y += 0.0004;
+      bgParticles.rotation.x = Math.sin(Date.now() * 0.0002) * 0.02;
       bgRenderer.render(bgScene, bgCamera);
     }
 

@@ -1,37 +1,87 @@
 /**
- * SIMÓN FITNESS - THREE.JS 3D SCENE ENGINE (v4.0 Universal 3D Render)
- * 3 Escenas 3D independientes sin cajas, sueltas, grandes y visibles en escritorio y móvil.
+ * SIMÓN FITNESS - THREE.JS 3D ENGINE (v5.0 Cinematic Particle Field & Free 3D Objects)
+ * Partículas flotantes sutiles en movimiento lento (Rojo + Blanco) en fondo carbono (#0A0A0B).
+ * Renderizado de objetos 3D sueltos sin cajas, ocultos en móviles (< 992px) para máxima velocidad.
  */
 
 window.SimonFitness3D = (function () {
   'use strict';
 
   const scenes = [];
+  let isMobile = false;
+
+  function checkMobile() {
+    isMobile = window.innerWidth < 992;
+  }
 
   function init() {
+    checkMobile();
+    window.addEventListener('resize', onWindowResize, false);
+
+    // En móviles (< 992px) ocultamos 3D para dejar la interfaz 100% limpia y veloz
+    if (isMobile) {
+      console.log('Modo Móvil: Renderizado 3D desactivado para fluidez total.');
+      return;
+    }
+
     if (typeof THREE === 'undefined') return;
 
     setupHeroSlot();
     setupService1Slot();
     setupService2Slot();
 
-    window.addEventListener('resize', onWindowResize, false);
-
     animate();
   }
 
-  // 1. HERO: MANCUERNA METÁLICA (#hero-3d-canvas)
+  // Helper: Añadir campo de partículas sutiles flotantes (rojas y blancas)
+  function addParticleField(scene) {
+    const particleCount = 60;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+
+    const redColor = new THREE.Color(0xE30613);
+    const whiteColor = new THREE.Color(0xffffff);
+
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 12;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+
+      const mixColor = Math.random() > 0.4 ? redColor : whiteColor;
+      colors[i * 3] = mixColor.r;
+      colors[i * 3 + 1] = mixColor.g;
+      colors[i * 3 + 2] = mixColor.b;
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+      size: 0.04,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.35,
+      blending: THREE.AdditiveBlending
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+    return particles;
+  }
+
+  // 1. HERO SLOT: MANCUERNA METÁLICA (#hero-3d-canvas)
   function setupHeroSlot() {
     const canvas = document.getElementById('hero-3d-canvas');
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const width = rect.width || 440;
-    const height = rect.height || 400;
+    const width = rect.width || 480;
+    const height = rect.height || 440;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0, 4.4);
+    camera.position.set(0, 0, 4.3);
 
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
     renderer.setSize(width, height);
@@ -46,10 +96,12 @@ window.SimonFitness3D = (function () {
     redLight.position.set(-2, -2, 3);
     scene.add(redLight);
 
+    const particles = addParticleField(scene);
+
     const dumbbellGroup = new THREE.Group();
     const chromeMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.95, roughness: 0.1 });
     const ironMat = new THREE.MeshStandardMaterial({ color: 0x1e1e24, metalness: 0.85, roughness: 0.2 });
-    const redMat = new THREE.MeshStandardMaterial({ color: 0xE30613, metalness: 0.7 });
+    const redMat = new THREE.MeshStandardMaterial({ color: 0xE30613, metalness: 0.7, roughness: 0.2 });
 
     const barGeo = new THREE.CylinderGeometry(0.14, 0.14, 3.6, 32);
     const bar = new THREE.Mesh(barGeo, chromeMat);
@@ -90,9 +142,11 @@ window.SimonFitness3D = (function () {
       scene: scene,
       camera: camera,
       group: dumbbellGroup,
+      particles: particles,
       update: () => {
         dumbbellGroup.rotation.y += 0.009;
         dumbbellGroup.rotation.x = Math.sin(Date.now() * 0.001) * 0.12;
+        particles.rotation.y += 0.001;
       }
     });
   }
@@ -103,8 +157,8 @@ window.SimonFitness3D = (function () {
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const width = rect.width || 440;
-    const height = rect.height || 400;
+    const width = rect.width || 480;
+    const height = rect.height || 440;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -119,6 +173,8 @@ window.SimonFitness3D = (function () {
     const mainLight = new THREE.DirectionalLight(0xffffff, 3.2);
     mainLight.position.set(5, 6, 5);
     scene.add(mainLight);
+
+    const particles = addParticleField(scene);
 
     const treadmillGroup = new THREE.Group();
     const darkMetal = new THREE.MeshStandardMaterial({ color: 0x1e1e26, metalness: 0.9, roughness: 0.2 });
@@ -167,8 +223,10 @@ window.SimonFitness3D = (function () {
       scene: scene,
       camera: camera,
       group: treadmillGroup,
+      particles: particles,
       update: () => {
         treadmillGroup.rotation.y = Math.sin(Date.now() * 0.0008) * 0.35 - 0.2;
+        particles.rotation.y += 0.001;
       }
     });
   }
@@ -179,8 +237,8 @@ window.SimonFitness3D = (function () {
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const width = rect.width || 440;
-    const height = rect.height || 400;
+    const width = rect.width || 480;
+    const height = rect.height || 440;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -195,6 +253,8 @@ window.SimonFitness3D = (function () {
     const mainLight = new THREE.DirectionalLight(0xffffff, 3.2);
     mainLight.position.set(5, 6, 5);
     scene.add(mainLight);
+
+    const particles = addParticleField(scene);
 
     const bikeGroup = new THREE.Group();
     const chromeMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.95, roughness: 0.1 });
@@ -242,13 +302,18 @@ window.SimonFitness3D = (function () {
       scene: scene,
       camera: camera,
       group: bikeGroup,
+      particles: particles,
       update: () => {
         bikeGroup.rotation.y = Math.sin(Date.now() * 0.0008) * 0.35 + 0.2;
+        particles.rotation.y += 0.001;
       }
     });
   }
 
   function onWindowResize() {
+    checkMobile();
+    if (isMobile) return;
+
     scenes.forEach(item => {
       if (!item.canvas) return;
       const rect = item.canvas.getBoundingClientRect();
@@ -262,6 +327,7 @@ window.SimonFitness3D = (function () {
 
   function animate() {
     requestAnimationFrame(animate);
+    if (isMobile) return;
 
     scenes.forEach(item => {
       if (item.update) item.update();

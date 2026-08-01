@@ -1,7 +1,7 @@
 /**
- * SIMÓN FITNESS - THREE.JS 3D ENGINE (v5.1 High-Density Particle Starfield)
- * Campo de partículas rojas y blancas de alto impacto: más densas (240 por escena),
- * más grandes (size 0.09), luminosas (opacity 0.75) y con movimiento orgánico flotante.
+ * SIMÓN FITNESS - THREE.JS 3D ENGINE (v5.2 Full-Page Background Starfield)
+ * 1. Lienzo de partículas fijas de fondo (#stars-background-canvas) que cubre TODA la página web.
+ * 2. Tres escenas 3D de modelos (Mancuerna, Cinta, Bicicleta) en sus respectivos slots.
  */
 
 window.SimonFitness3D = (function () {
@@ -9,6 +9,9 @@ window.SimonFitness3D = (function () {
 
   const scenes = [];
   let isMobile = false;
+
+  // Escena y partículas del FONDO COMPLETO DE LA PÁGINA
+  let bgScene, bgCamera, bgRenderer, bgParticles;
 
   function checkMobile() {
     isMobile = window.innerWidth < 992;
@@ -18,24 +21,37 @@ window.SimonFitness3D = (function () {
     checkMobile();
     window.addEventListener('resize', onWindowResize, false);
 
-    // En móviles (< 992px) ocultamos 3D para dejar la interfaz 100% limpia y veloz
-    if (isMobile) {
-      console.log('Modo Móvil: Renderizado 3D desactivado para fluidez total.');
-      return;
-    }
-
     if (typeof THREE === 'undefined') return;
 
-    setupHeroSlot();
-    setupService1Slot();
-    setupService2Slot();
+    // 1. Inicializar el Fondo Global de Partículas para TODA la web
+    setupFullPageParticleBg();
+
+    // 2. Inicializar los Modelos 3D en sus slots (en escritorio)
+    if (!isMobile) {
+      setupHeroSlot();
+      setupService1Slot();
+      setupService2Slot();
+    }
 
     animate();
   }
 
-  // Helper: Añadir campo de partículas intensas, visibles y flotantes (Rojo Eléctrico + Blanco Puro)
-  function addParticleField(scene) {
-    const particleCount = 240; // Cuadruplicamos la cantidad para alta densidad visual
+  // ==========================================================================
+  // FONDO GLOBAL DE PARTÍCULAS PARA TODA LA PÁGINA (#stars-background-canvas)
+  // ==========================================================================
+  function setupFullPageParticleBg() {
+    const canvas = document.getElementById('stars-background-canvas');
+    if (!canvas) return;
+
+    bgScene = new THREE.Scene();
+    bgCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    bgCamera.position.z = 400;
+
+    bgRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    bgRenderer.setSize(window.innerWidth, window.innerHeight);
+    bgRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const particleCount = isMobile ? 180 : 380; // Alta densidad en toda la pantalla
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
@@ -45,9 +61,9 @@ window.SimonFitness3D = (function () {
     const whiteColor = new THREE.Color(0xFFFFFF);
 
     for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 16;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 16;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 12;
+      positions[i * 3] = (Math.random() - 0.5) * 1200;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 1200;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 800;
 
       const rand = Math.random();
       let mixColor;
@@ -68,17 +84,20 @@ window.SimonFitness3D = (function () {
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
     const material = new THREE.PointsMaterial({
-      size: 0.09, // Más de 2x tamaño anterior para máxima visibilidad
+      size: isMobile ? 3.5 : 4.5,
       vertexColors: true,
       transparent: true,
-      opacity: 0.75, // Alta opacidad y brillo
+      opacity: 0.75,
       blending: THREE.AdditiveBlending
     });
 
-    const particles = new THREE.Points(geometry, material);
-    scene.add(particles);
-    return particles;
+    bgParticles = new THREE.Points(geometry, material);
+    bgScene.add(bgParticles);
   }
+
+  // ==========================================================================
+  // MODELOS 3D EN CADA SECCIÓN
+  // ==========================================================================
 
   // 1. HERO SLOT: MANCUERNA METÁLICA (#hero-3d-canvas)
   function setupHeroSlot() {
@@ -105,8 +124,6 @@ window.SimonFitness3D = (function () {
     const redLight = new THREE.PointLight(0xE30613, 6, 18);
     redLight.position.set(-2, -2, 3);
     scene.add(redLight);
-
-    const particles = addParticleField(scene);
 
     const dumbbellGroup = new THREE.Group();
     const chromeMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.95, roughness: 0.1 });
@@ -152,12 +169,9 @@ window.SimonFitness3D = (function () {
       scene: scene,
       camera: camera,
       group: dumbbellGroup,
-      particles: particles,
       update: () => {
         dumbbellGroup.rotation.y += 0.009;
         dumbbellGroup.rotation.x = Math.sin(Date.now() * 0.001) * 0.12;
-        particles.rotation.y += 0.002;
-        particles.rotation.x = Math.sin(Date.now() * 0.0005) * 0.05;
       }
     });
   }
@@ -184,8 +198,6 @@ window.SimonFitness3D = (function () {
     const mainLight = new THREE.DirectionalLight(0xffffff, 3.2);
     mainLight.position.set(5, 6, 5);
     scene.add(mainLight);
-
-    const particles = addParticleField(scene);
 
     const treadmillGroup = new THREE.Group();
     const darkMetal = new THREE.MeshStandardMaterial({ color: 0x1e1e26, metalness: 0.9, roughness: 0.2 });
@@ -234,11 +246,8 @@ window.SimonFitness3D = (function () {
       scene: scene,
       camera: camera,
       group: treadmillGroup,
-      particles: particles,
       update: () => {
         treadmillGroup.rotation.y = Math.sin(Date.now() * 0.0008) * 0.35 - 0.2;
-        particles.rotation.y += 0.002;
-        particles.rotation.x = Math.sin(Date.now() * 0.0005) * 0.05;
       }
     });
   }
@@ -265,8 +274,6 @@ window.SimonFitness3D = (function () {
     const mainLight = new THREE.DirectionalLight(0xffffff, 3.2);
     mainLight.position.set(5, 6, 5);
     scene.add(mainLight);
-
-    const particles = addParticleField(scene);
 
     const bikeGroup = new THREE.Group();
     const chromeMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.95, roughness: 0.1 });
@@ -314,17 +321,21 @@ window.SimonFitness3D = (function () {
       scene: scene,
       camera: camera,
       group: bikeGroup,
-      particles: particles,
       update: () => {
         bikeGroup.rotation.y = Math.sin(Date.now() * 0.0008) * 0.35 + 0.2;
-        particles.rotation.y += 0.002;
-        particles.rotation.x = Math.sin(Date.now() * 0.0005) * 0.05;
       }
     });
   }
 
   function onWindowResize() {
     checkMobile();
+
+    if (bgCamera && bgRenderer) {
+      bgCamera.aspect = window.innerWidth / window.innerHeight;
+      bgCamera.updateProjectionMatrix();
+      bgRenderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
     if (isMobile) return;
 
     scenes.forEach(item => {
@@ -340,8 +351,17 @@ window.SimonFitness3D = (function () {
 
   function animate() {
     requestAnimationFrame(animate);
+
+    // Animación de partículas del FONDO COMPLETO
+    if (bgParticles && bgRenderer) {
+      bgParticles.rotation.y += 0.0008;
+      bgParticles.rotation.x = Math.sin(Date.now() * 0.0003) * 0.04;
+      bgRenderer.render(bgScene, bgCamera);
+    }
+
     if (isMobile) return;
 
+    // Animación de los slots 3D de modelos
     scenes.forEach(item => {
       if (item.update) item.update();
       item.renderer.render(item.scene, item.camera);
